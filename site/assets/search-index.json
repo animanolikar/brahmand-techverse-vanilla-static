@@ -56,9 +56,37 @@
     "type": "tool"
   },
   {
+    "title": "AI Automation Checklist for Tech Teams",
+    "description": "Step-by-step automation checklist for Ops teams.",
+    "url": "/techverse/ai-automation-checklist.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "AI QA Framework",
+    "description": "Testing loops for AI generated work.",
+    "url": "/techverse/ai-qa-framework.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
     "title": "AI Tool Stack 2025: Orchestrate Agents That Actually Ship",
     "description": "Layer Claude, GPT-4.2, Gemini 1.5, and open-source copilots into one Techverse workflow.",
     "url": "/techverse/ai-tools.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Automation API Glossary",
+    "description": "Key APIs for makers with quick usage.",
+    "url": "/techverse/automation-api-glossary.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Browser Workspace Setup for Builders",
+    "description": "Chrome profiles, extensions, and sync tips.",
+    "url": "/techverse/browser-workspace-setup.html",
     "verse": "Techverse",
     "type": "article"
   },
@@ -77,6 +105,20 @@
     "type": "article"
   },
   {
+    "title": "Content Remix Machine",
+    "description": "Repurpose long-form to shorts fast.",
+    "url": "/techverse/content-remix-machine.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Creator Studio Stack 2025",
+    "description": "Hardware + software picks for creators.",
+    "url": "/techverse/creator-studio-stack.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
     "title": "Techverse – Brahmand.co",
     "description": "The Techverse hub curates AI tools, templates, and workflows for modern builders.",
     "url": "/techverse/index.html",
@@ -84,9 +126,37 @@
     "type": "article"
   },
   {
+    "title": "Notion CRM Template for Solo Teams",
+    "description": "Fields and automations for CRM board.",
+    "url": "/techverse/notion-crm-template.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
     "title": "Notion Templates Vault for Operators",
     "description": "Run growth, investor updates, and product ops from these Notion bases built for Techverse.",
     "url": "/techverse/notion-templates.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Launch a Landing Page in One Day",
+    "description": "Template-driven landing workflow.",
+    "url": "/techverse/one-day-landing-page.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Prompt Ops Playbook",
+    "description": "Governance for stored prompts and reviews.",
+    "url": "/techverse/prompt-ops-playbook.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Research Sprint System",
+    "description": "Structure 3-day research loops.",
+    "url": "/techverse/research-sprint-system.html",
     "verse": "Techverse",
     "type": "article"
   },
