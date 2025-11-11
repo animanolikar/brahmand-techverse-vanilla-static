@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Text Cleaner – Brahmand Tools</title>
+  <meta name="description" content="Clean, normalize, and download text directly in your browser.">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<!-- SITE-NAV-START -->
+  <header>
+    <div class="navbar" role="navigation" aria-label="Primary">
+      <a class="logo" href="/">BRAHMAND</a>
+      <button class="mobile-nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu">
+        ☰
+      </button>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/techverse/">Techverse</a></li>
+          <li><a href="/finverse/">Finverse</a></li>
+          <li><a href="/healthverse/">Healthverse</a></li>
+          <li><a href="/skillverse/">Skillverse</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><button class="button-secondary" data-mega-toggle aria-expanded="false" aria-controls="mega-menu">Explore</button></li>
+        </ul>
+        <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+          <a href="/">Home</a>
+          <a href="/techverse/">Techverse</a>
+          <a href="/finverse/">Finverse</a>
+          <a href="/healthverse/">Healthverse</a>
+          <a href="/skillverse/">Skillverse</a>
+          <a href="/tools/">Tools</a>
+          <a href="/about.html">About</a>
+        </div>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn-primary" href="/tools/">Launch Tools</a>
+      </div>
+    </div>
+    <div class="mega-menu" id="mega-menu" data-mega-menu>
+      <div class="mega-grid">
+        <div class="mega-column">
+          <h4>Techverse</h4>
+          <ul>
+            <li><a href="/techverse/ai-tools.html">AI Stack Blueprint</a></li>
+            <li><a href="/techverse/canva-vs-figma.html">Canva vs Figma</a></li>
+            <li><a href="/techverse/notion-templates.html">Ultimate Notion Templates</a></li>
+            <li><a href="/techverse/chrome-extensions.html">Chrome Extensions Kit</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Finverse</h4>
+          <ul>
+            <li><a href="/finverse/">Money Systems</a></li>
+            <li><a href="/finverse/">Investing primers</a></li>
+            <li><a href="/finverse/">Side-hustle stacks</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Healthverse</h4>
+          <ul>
+            <li><a href="/healthverse/">Reset protocols</a></li>
+            <li><a href="/healthverse/">Energy loops</a></li>
+            <li><a href="/healthverse/">Bio-sync tools</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Skillverse</h4>
+          <ul>
+            <li><a href="/skillverse/">Career nodes</a></li>
+            <li><a href="/skillverse/">Creator playbooks</a></li>
+            <li><a href="/skillverse/">Freelance frameworks</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- SITE-NAV-END -->
+  <main>
+    <section class="section">
+      <div class="section-title">Text Cleaner</div>
+      <p>Paste messy text, apply cleanup rules, and download ready-to-publish copy.</p>
+      <div class="tool-layout">
+        <div class="tool-panel">
+          <label for="text-input">Input</label>
+          <textarea id="text-input" rows="10" placeholder="Paste content here..."></textarea>
+          <div class="glass-panel" style="margin-top:1rem;">
+            <label><input type="checkbox" id="trim-checkbox" checked> Trim whitespace</label><br>
+            <label><input type="checkbox" id="collapse-checkbox" checked> Collapse multiple spaces</label><br>
+            <label><input type="checkbox" id="empty-checkbox" checked> Remove empty lines</label><br>
+            <label><input type="checkbox" id="unique-checkbox"> Remove duplicate lines</label>
+            <label for="case-select" style="margin-top:0.75rem;">Case transform</label>
+            <select id="case-select">
+              <option value="none">Keep original</option>
+              <option value="upper">UPPERCASE</option>
+              <option value="lower">lowercase</option>
+              <option value="title">Title Case</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem;">
+            <button class="btn-primary" id="clean-btn">Clean text</button>
+            <button class="button-secondary" id="copy-btn">Copy</button>
+            <button class="button-secondary" id="download-btn">Download</button>
+          </div>
+        </div>
+        <div class="tool-panel">
+          <label for="text-output">Output</label>
+          <textarea id="text-output" rows="10" placeholder="Clean output appears here"></textarea>
+          <div class="glass-panel" style="margin-top:1rem;">
+            <p><strong>Stats</strong></p>
+            <p>Characters: <span id="char-count">0</span></p>
+            <p>Words: <span id="word-count">0</span></p>
+            <p>Lines: <span id="line-count">0</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+<footer>
+    <div class="footer-grid">
+      <div>
+        <p class="logo">BRAHMAND</p>
+        <p>The modular knowledge engine for makers.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about.html">About</a><br>
+        <a href="/privacy.html">Privacy</a><br>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div>
+        <h4>Verses</h4>
+        <a href="/techverse/">Techverse</a><br>
+        <a href="/finverse/">Finverse</a><br>
+        <a href="/healthverse/">Healthverse</a><br>
+        <a href="/skillverse/">Skillverse</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href="/tools/">Automation</a><br>
+        <a href="/tools/focus-timer.html">Focus Timer</a>
+      </div>
+    </div>
+  </footer>
+
+<div class="banner-consent" data-consent-banner>
+    <p>We use cookies + local storage to personalize content and measure monetization experiments. Do you accept?</p>
+    <div class="banner-actions">
+      <button class="btn-primary" data-consent-action="accepted">Accept</button>
+      <button class="button-secondary" data-consent-action="declined">Decline</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js" defer></script>
+  <script>
+    (() => {
+      const input = document.getElementById('text-input');
+      const output = document.getElementById('text-output');
+      const stats = {
+        char: document.getElementById('char-count'),
+        word: document.getElementById('word-count'),
+        line: document.getElementById('line-count')
+      };
+      const options = {
+        trim: document.getElementById('trim-checkbox'),
+        collapse: document.getElementById('collapse-checkbox'),
+        empty: document.getElementById('empty-checkbox'),
+        unique: document.getElementById('unique-checkbox'),
+        casing: document.getElementById('case-select')
+      };
+      const buttons = {
+        clean: document.getElementById('clean-btn'),
+        copy: document.getElementById('copy-btn'),
+        download: document.getElementById('download-btn')
+      };
+
+      const titleCase = (text) => text.replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
+      const cleanText = () => {
+        let value = input.value;
+        if (options.trim.checked) value = value.trim();
+        let lines = value.split(/?
+/);
+        if (options.empty.checked) {
+          lines = lines.filter((line) => line.trim().length > 0);
+        }
+        if (options.collapse.checked) {
+          lines = lines.map((line) => line.replace(/\s+/g, ' ').trim());
+        }
+        if (options.unique.checked) {
+          const seen = new Set();
+          lines = lines.filter((line) => {
+            if (seen.has(line)) return false;
+            seen.add(line);
+            return true;
+          });
+        }
+        value = lines.join('
+');
+        if (options.casing.value === 'upper') value = value.toUpperCase();
+        if (options.casing.value === 'lower') value = value.toLowerCase();
+        if (options.casing.value === 'title') value = titleCase(value);
+        output.value = value;
+        updateStats();
+      };
+
+      const updateStats = () => {
+        const text = output.value;
+        stats.char.textContent = text.length;
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        stats.word.textContent = words;
+        stats.line.textContent = text ? text.split(/
+/).length : 0;
+      };
+
+      const copyText = async () => {
+        if (!output.value) return;
+        try {
+          await navigator.clipboard.writeText(output.value);
+          buttons.copy.textContent = 'Copied!';
+          setTimeout(() => (buttons.copy.textContent = 'Copy'), 1500);
+        } catch (error) {
+          console.error('Copy failed', error);
+        }
+      };
+
+      const download = () => {
+        if (!output.value) return;
+        const blob = new Blob([output.value], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'brahmand-clean-text.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      buttons.clean.addEventListener('click', cleanText);
+      buttons.copy.addEventListener('click', copyText);
+      buttons.download.addEventListener('click', download);
+      output.addEventListener('input', updateStats);
+    })();
+  </script>
+</body>
+</html>

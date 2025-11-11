@@ -35,9 +35,23 @@
     "type": "tool"
   },
   {
+    "title": "Image Resizer – Brahmand Tools",
+    "description": "Resize, convert, and export images locally with Brahmand.",
+    "url": "/tools/image-resizer.html",
+    "verse": "Tools",
+    "type": "tool"
+  },
+  {
     "title": "Brahmand Tools",
     "description": "Explore Brahmand utilities including the focus timer built for Pomodoro loops.",
     "url": "/tools/index.html",
+    "verse": "Tools",
+    "type": "tool"
+  },
+  {
+    "title": "Text Cleaner – Brahmand Tools",
+    "description": "Clean, normalize, and download text directly in your browser.",
+    "url": "/tools/text-cleaner.html",
     "verse": "Tools",
     "type": "tool"
   },
@@ -74,6 +88,111 @@
     "description": "Run growth, investor updates, and product ops from these Notion bases built for Techverse.",
     "url": "/techverse/notion-templates.html",
     "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Freelancer Pricing Ladder 2025",
+    "description": "Move from hourly to value-based retainers with this 4-rung ladder.",
+    "url": "/skillverse/freelancer-pricing.html",
+    "verse": "Skillverse",
+    "type": "article"
+  },
+  {
+    "title": "Skillverse – Brahmand.co",
+    "description": "Career playbooks for modern polymaths.",
+    "url": "/skillverse/index.html",
+    "verse": "Skillverse",
+    "type": "article"
+  },
+  {
+    "title": "Mentor OS: Turn Coffee Chats into Compounding Guidance",
+    "description": "Structure outreach, questions, and follow-ups so mentors want to keep helping.",
+    "url": "/skillverse/mentor-os.html",
+    "verse": "Skillverse",
+    "type": "article"
+  },
+  {
+    "title": "Microlearning Systems for Busy Builders",
+    "description": "Design a 20-minute daily learning stack with review cadences.",
+    "url": "/skillverse/microlearning-systems.html",
+    "verse": "Skillverse",
+    "type": "article"
+  },
+  {
+    "title": "One-Page Resume That Lands Operator Roles",
+    "description": "Structure, content, and proof points for a recruiter-friendly single pager.",
+    "url": "/skillverse/one-page-resume.html",
+    "verse": "Skillverse",
+    "type": "article"
+  },
+  {
+    "title": "7-Day Sleep Reset Protocol",
+    "description": "A one-week protocol to recalibrate circadian rhythm and deep sleep.",
+    "url": "/healthverse/7-day-sleep-reset.html",
+    "verse": "Healthverse",
+    "type": "article"
+  },
+  {
+    "title": "Desk Detox Routine for Builders",
+    "description": "Counteract laptop posture with micro-movements and breath work.",
+    "url": "/healthverse/desk-detox.html",
+    "verse": "Healthverse",
+    "type": "article"
+  },
+  {
+    "title": "Healthverse – Brahmand.co",
+    "description": "Resilience stacks to keep makers energized while shipping.",
+    "url": "/healthverse/index.html",
+    "verse": "Healthverse",
+    "type": "article"
+  },
+  {
+    "title": "Longevity Sprint 2×2×2",
+    "description": "A minimalist conditioning plan: 2 strength, 2 cardio, 2 mobility sessions per week.",
+    "url": "/healthverse/longevity-sprint.html",
+    "verse": "Healthverse",
+    "type": "article"
+  },
+  {
+    "title": "Metabolic Morning Playbook",
+    "description": "Stack light, movement, and macros to stabilize energy before noon.",
+    "url": "/healthverse/metabolic-mornings.html",
+    "verse": "Healthverse",
+    "type": "article"
+  },
+  {
+    "title": "Beginner Budgeting Map for First-Time Earners",
+    "description": "A human budgeting guide that connects values, envelopes, and automation.",
+    "url": "/finverse/beginners-budgeting.html",
+    "verse": "Finverse",
+    "type": "article"
+  },
+  {
+    "title": "Cash-flow Ladder: Build Buffers in 3 Levels",
+    "description": "Stack essentials, growth, and freedom tiers so money arrives before bills land.",
+    "url": "/finverse/cash-flow-ladder.html",
+    "verse": "Finverse",
+    "type": "article"
+  },
+  {
+    "title": "Finverse – Brahmand.co",
+    "description": "Finance OS for creators, freelancers, and modern households.",
+    "url": "/finverse/index.html",
+    "verse": "Finverse",
+    "type": "article"
+  },
+  {
+    "title": "Side-Hustle Sprint Planner",
+    "description": "A 4-week sprint to validate, monetize, and scale a side income stream.",
+    "url": "/finverse/side-hustle-sprint.html",
+    "verse": "Finverse",
+    "type": "article"
+  },
+  {
+    "title": "SIP vs RD vs FD: Which System Wins in 2025?",
+    "description": "Compare Systematic Investment Plans, Recurring Deposits, and Fixed Deposits across goals.",
+    "url": "/finverse/sip-vs-rd-vs-fd.html",
+    "verse": "Finverse",
     "type": "article"
   }
 ]

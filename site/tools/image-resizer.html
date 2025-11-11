@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Image Resizer – Brahmand Tools</title>
+  <meta name="description" content="Resize, convert, and export images locally with Brahmand.">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<!-- SITE-NAV-START -->
+  <header>
+    <div class="navbar" role="navigation" aria-label="Primary">
+      <a class="logo" href="/">BRAHMAND</a>
+      <button class="mobile-nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu">
+        ☰
+      </button>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/techverse/">Techverse</a></li>
+          <li><a href="/finverse/">Finverse</a></li>
+          <li><a href="/healthverse/">Healthverse</a></li>
+          <li><a href="/skillverse/">Skillverse</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><button class="button-secondary" data-mega-toggle aria-expanded="false" aria-controls="mega-menu">Explore</button></li>
+        </ul>
+        <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+          <a href="/">Home</a>
+          <a href="/techverse/">Techverse</a>
+          <a href="/finverse/">Finverse</a>
+          <a href="/healthverse/">Healthverse</a>
+          <a href="/skillverse/">Skillverse</a>
+          <a href="/tools/">Tools</a>
+          <a href="/about.html">About</a>
+        </div>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn-primary" href="/tools/">Launch Tools</a>
+      </div>
+    </div>
+    <div class="mega-menu" id="mega-menu" data-mega-menu>
+      <div class="mega-grid">
+        <div class="mega-column">
+          <h4>Techverse</h4>
+          <ul>
+            <li><a href="/techverse/ai-tools.html">AI Stack Blueprint</a></li>
+            <li><a href="/techverse/canva-vs-figma.html">Canva vs Figma</a></li>
+            <li><a href="/techverse/notion-templates.html">Ultimate Notion Templates</a></li>
+            <li><a href="/techverse/chrome-extensions.html">Chrome Extensions Kit</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Finverse</h4>
+          <ul>
+            <li><a href="/finverse/">Money Systems</a></li>
+            <li><a href="/finverse/">Investing primers</a></li>
+            <li><a href="/finverse/">Side-hustle stacks</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Healthverse</h4>
+          <ul>
+            <li><a href="/healthverse/">Reset protocols</a></li>
+            <li><a href="/healthverse/">Energy loops</a></li>
+            <li><a href="/healthverse/">Bio-sync tools</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Skillverse</h4>
+          <ul>
+            <li><a href="/skillverse/">Career nodes</a></li>
+            <li><a href="/skillverse/">Creator playbooks</a></li>
+            <li><a href="/skillverse/">Freelance frameworks</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- SITE-NAV-END -->
+  <main>
+    <section class="section">
+      <div class="section-title">Image Resizer</div>
+      <p>Resize, convert, and export hero images inside your browser.</p>
+      <div class="tool-layout">
+        <div class="tool-panel">
+          <label for="image-input">Upload image</label>
+          <input type="file" id="image-input" accept="image/*">
+          <div class="glass-panel" style="margin-top:1rem;">
+            <p>Dimensions</p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:0.75rem;">
+              <div>
+                <label for="width-input">Width (px)</label>
+                <input type="number" id="width-input" min="1" value="1200">
+              </div>
+              <div>
+                <label for="height-input">Height (px)</label>
+                <input type="number" id="height-input" min="1" value="628">
+              </div>
+            </div>
+            <label style="margin-top:0.5rem;"><input type="checkbox" id="lock-ratio" checked> Lock aspect ratio</label>
+          </div>
+          <div class="glass-panel" style="margin-top:1rem;">
+            <label for="format-select">Format</label>
+            <select id="format-select">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+            <label for="quality-range" style="margin-top:0.5rem;">Quality <span id="quality-label">0.9</span></label>
+            <input type="range" id="quality-range" min="0.4" max="1" step="0.05" value="0.9">
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem;">
+            <button class="btn-primary" id="download-image">Download</button>
+            <button class="button-secondary" id="reset-image">Reset</button>
+          </div>
+        </div>
+        <div class="tool-panel">
+          <canvas id="preview-canvas" style="max-width:100%; border-radius:16px; border:1px solid rgba(255,255,255,0.1);"></canvas>
+          <p id="image-meta" style="margin-top:0.75rem; color:var(--muted);">Drop an image to begin.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+<footer>
+    <div class="footer-grid">
+      <div>
+        <p class="logo">BRAHMAND</p>
+        <p>The modular knowledge engine for makers.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about.html">About</a><br>
+        <a href="/privacy.html">Privacy</a><br>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div>
+        <h4>Verses</h4>
+        <a href="/techverse/">Techverse</a><br>
+        <a href="/finverse/">Finverse</a><br>
+        <a href="/healthverse/">Healthverse</a><br>
+        <a href="/skillverse/">Skillverse</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href="/tools/">Automation</a><br>
+        <a href="/tools/focus-timer.html">Focus Timer</a>
+      </div>
+    </div>
+  </footer>
+
+<div class="banner-consent" data-consent-banner>
+    <p>We use cookies + local storage to personalize content and measure monetization experiments. Do you accept?</p>
+    <div class="banner-actions">
+      <button class="btn-primary" data-consent-action="accepted">Accept</button>
+      <button class="button-secondary" data-consent-action="declined">Decline</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js" defer></script>
+  <script>
+    (() => {
+      const fileInput = document.getElementById('image-input');
+      const widthInput = document.getElementById('width-input');
+      const heightInput = document.getElementById('height-input');
+      const lockRatio = document.getElementById('lock-ratio');
+      const formatSelect = document.getElementById('format-select');
+      const qualityRange = document.getElementById('quality-range');
+      const qualityLabel = document.getElementById('quality-label');
+      const downloadBtn = document.getElementById('download-image');
+      const resetBtn = document.getElementById('reset-image');
+      const canvas = document.getElementById('preview-canvas');
+      const ctx = canvas.getContext('2d');
+      const meta = document.getElementById('image-meta');
+      let originalRatio = 1;
+      let imageLoaded = false;
+
+      const updateQualityLabel = () => {
+        qualityLabel.textContent = Number(qualityRange.value).toFixed(2);
+      };
+
+      const renderImage = (img) => {
+        canvas.width = Number(widthInput.value);
+        canvas.height = Number(heightInput.value);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        meta.textContent = `Preview: ${canvas.width}×${canvas.height}`;
+        imageLoaded = true;
+      };
+
+      const loadImage = (file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            originalRatio = img.width / img.height;
+            widthInput.value = img.width;
+            heightInput.value = img.height;
+            renderImage(img);
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      };
+
+      const syncDimensions = (fromWidth) => {
+        if (!lockRatio.checked) return;
+        if (fromWidth) {
+          heightInput.value = Math.round(Number(widthInput.value) / originalRatio);
+        } else {
+          widthInput.value = Math.round(Number(heightInput.value) * originalRatio);
+        }
+      };
+
+      const updateCanvasSize = () => {
+        if (!imageLoaded) return;
+        const img = new Image();
+        img.onload = () => renderImage(img);
+        img.src = canvas.toDataURL();
+      };
+
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) loadImage(file);
+      });
+
+      widthInput.addEventListener('change', () => {
+        syncDimensions(true);
+        updateCanvasSize();
+      });
+
+      heightInput.addEventListener('change', () => {
+        syncDimensions(false);
+        updateCanvasSize();
+      });
+
+      lockRatio.addEventListener('change', () => {
+        if (lockRatio.checked) {
+          originalRatio = Number(widthInput.value) / Number(heightInput.value);
+        }
+      });
+
+      qualityRange.addEventListener('input', updateQualityLabel);
+
+      downloadBtn.addEventListener('click', () => {
+        if (!imageLoaded) return;
+        const quality = formatSelect.value === 'image/png' ? 1 : Number(qualityRange.value);
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          const link = document.createElement('a');
+          const extension = formatSelect.value.split('/')[1];
+          link.href = URL.createObjectURL(blob);
+          link.download = `brahmand-image.${extension}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }, formatSelect.value, quality);
+      });
+
+      resetBtn.addEventListener('click', () => {
+        canvas.width = 0;
+        canvas.height = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        fileInput.value = '';
+        imageLoaded = false;
+        meta.textContent = 'Drop an image to begin.';
+      });
+
+      updateQualityLabel();
+    })();
+  </script>
+</body>
+</html>
