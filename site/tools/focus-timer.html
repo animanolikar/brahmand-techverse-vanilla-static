@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Focus Timer – Brahmand Tools</title>
+  <meta name="description" content="Launch the Brahmand focus timer for Pomodoro-style sprints with automatic long breaks.">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Use the Brahmand Focus Timer",
+    "description": "Configure Pomodoro-inspired focus and break intervals to ship Techverse sprints.",
+    "step": [
+      {"@type": "HowToStep", "name": "Plan intervals", "text": "Set your focus, short break, and long break preferences."},
+      {"@type": "HowToStep", "name": "Start a sprint", "text": "Press start and stay in flow while Brahmand keeps time."},
+      {"@type": "HowToStep", "name": "Recover", "text": "After the set number of cycles the timer switches to long break."}
+    ]
+  }
+  </script>
+</head>
+<body>
+<!-- SITE-NAV-START -->
+  <header>
+    <div class="navbar" role="navigation" aria-label="Primary">
+      <a class="logo" href="/">BRAHMAND</a>
+      <button class="mobile-nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu">
+        ☰
+      </button>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/techverse/">Techverse</a></li>
+          <li><a href="/finverse/">Finverse</a></li>
+          <li><a href="/healthverse/">Healthverse</a></li>
+          <li><a href="/skillverse/">Skillverse</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><button class="button-secondary" data-mega-toggle aria-expanded="false" aria-controls="mega-menu">Explore</button></li>
+        </ul>
+        <div class="mobile-menu" id="mobile-menu" data-mobile-menu>
+          <a href="/">Home</a>
+          <a href="/techverse/">Techverse</a>
+          <a href="/finverse/">Finverse</a>
+          <a href="/healthverse/">Healthverse</a>
+          <a href="/skillverse/">Skillverse</a>
+          <a href="/tools/">Tools</a>
+          <a href="/about.html">About</a>
+        </div>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn-primary" href="/tools/">Launch Tools</a>
+      </div>
+    </div>
+    <div class="mega-menu" id="mega-menu" data-mega-menu>
+      <div class="mega-grid">
+        <div class="mega-column">
+          <h4>Techverse</h4>
+          <ul>
+            <li><a href="/techverse/ai-tools.html">AI Stack Blueprint</a></li>
+            <li><a href="/techverse/canva-vs-figma.html">Canva vs Figma</a></li>
+            <li><a href="/techverse/notion-templates.html">Ultimate Notion Templates</a></li>
+            <li><a href="/techverse/chrome-extensions.html">Chrome Extensions Kit</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Finverse</h4>
+          <ul>
+            <li><a href="/finverse/">Money Systems</a></li>
+            <li><a href="/finverse/">Investing primers</a></li>
+            <li><a href="/finverse/">Side-hustle stacks</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Healthverse</h4>
+          <ul>
+            <li><a href="/healthverse/">Reset protocols</a></li>
+            <li><a href="/healthverse/">Energy loops</a></li>
+            <li><a href="/healthverse/">Bio-sync tools</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Skillverse</h4>
+          <ul>
+            <li><a href="/skillverse/">Career nodes</a></li>
+            <li><a href="/skillverse/">Creator playbooks</a></li>
+            <li><a href="/skillverse/">Freelance frameworks</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- SITE-NAV-END -->
+  <main>
+    <section class="section">
+      <div class="section-title">Focus Timer</div>
+      <p>Pomodoro-inspired timer with long-break automation, built for Techverse sprints.</p>
+      <div class="tool-layout">
+        <div class="tool-panel">
+          <div class="badge">Current interval</div>
+          <h1 id="interval-label">Focus</h1>
+          <div class="glass-panel" style="text-align:center; margin:1rem 0;">
+            <div style="font-size:3.5rem; font-weight:700;" id="timer-display">25:00</div>
+            <p class="muted">Cycles completed: <span id="cycle-count">0</span></p>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn-primary" id="start-btn">Start</button>
+            <button class="button-secondary" id="pause-btn">Pause</button>
+            <button class="button-secondary" id="reset-btn">Reset</button>
+            <button class="button-secondary" id="skip-btn">Skip</button>
+          </div>
+        </div>
+        <div class="tool-panel">
+          <h3>Customize intervals</h3>
+          <label for="focus-input">Focus minutes</label>
+          <input type="number" id="focus-input" value="25" min="5" max="90">
+          <label for="break-input">Short break minutes</label>
+          <input type="number" id="break-input" value="5" min="3" max="30">
+          <label for="long-break-length-input">Long break minutes</label>
+          <input type="number" id="long-break-length-input" value="15" min="5" max="45">
+          <label for="long-break-input">Long break after (cycles)</label>
+          <input type="number" id="long-break-input" value="3" min="2" max="6">
+          <label for="sound-select">Completion sound</label>
+          <select id="sound-select">
+            <option value="chime">Soothing chime</option>
+            <option value="pulse">Pulse</option>
+            <option value="mute">Mute</option>
+          </select>
+        </div>
+      </div>
+      <div class="glass-panel" style="margin-top:2rem;">
+        <h2>How the Brahmand Focus Loop works</h2>
+        <ol class="list">
+          <li>Set focus + break intervals, then tap start.</li>
+          <li>Stay in full-screen or keep the tab active; you will get desktop beeps per cycle.</li>
+          <li>Every third cycle, the tool auto-triggers a longer recovery break.</li>
+        </ol>
+      </div>
+    </section>
+
+  </main>
+<footer>
+    <div class="footer-grid">
+      <div>
+        <p class="logo">BRAHMAND</p>
+        <p>The modular knowledge engine for makers.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about.html">About</a><br>
+        <a href="/privacy.html">Privacy</a><br>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div>
+        <h4>Verses</h4>
+        <a href="/techverse/">Techverse</a><br>
+        <a href="/finverse/">Finverse</a><br>
+        <a href="/healthverse/">Healthverse</a><br>
+        <a href="/skillverse/">Skillverse</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href="/tools/">Automation</a><br>
+        <a href="/tools/focus-timer.html">Focus Timer</a>
+      </div>
+    </div>
+  </footer>
+
+<div class="banner-consent" data-consent-banner>
+    <p>We use cookies + local storage to personalize content and measure monetization experiments. Do you accept?</p>
+    <div class="banner-actions">
+      <button class="btn-primary" data-consent-action="accepted">Accept</button>
+      <button class="button-secondary" data-consent-action="declined">Decline</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js" defer></script>
+  <script>
+    (() => {
+      const display = document.getElementById('timer-display');
+      const label = document.getElementById('interval-label');
+      const cycleCount = document.getElementById('cycle-count');
+      const focusInput = document.getElementById('focus-input');
+      const breakInput = document.getElementById('break-input');
+      const longBreakLengthInput = document.getElementById('long-break-length-input');
+      const longBreakEveryInput = document.getElementById('long-break-input');
+      const soundSelect = document.getElementById('sound-select');
+      const buttons = {
+        start: document.getElementById('start-btn'),
+        pause: document.getElementById('pause-btn'),
+        reset: document.getElementById('reset-btn'),
+        skip: document.getElementById('skip-btn')
+      };
+
+      let timerId = null;
+      let mode = 'focus';
+      let secondsRemaining = parseInt(focusInput.value, 10) * 60;
+      let cycles = 0;
+      let audioCtx;
+
+      const sanitize = (input, fallback) => {
+        const value = parseInt(input.value, 10);
+        if (Number.isNaN(value)) {
+          input.value = fallback;
+          return fallback;
+        }
+        return value;
+      };
+
+      const getDurations = () => ({
+        focus: sanitize(focusInput, 25) * 60,
+        break: sanitize(breakInput, 5) * 60,
+        longBreak: sanitize(longBreakLengthInput, 15) * 60,
+        every: Math.max(2, sanitize(longBreakEveryInput, 3))
+      });
+
+      const formatTime = (value) => {
+        const minutes = String(Math.floor(value / 60)).padStart(2, '0');
+        const seconds = String(value % 60).padStart(2, '0');
+        return `${minutes}:${seconds}`;
+      };
+
+      const updateDisplay = () => {
+        display.textContent = formatTime(secondsRemaining);
+        cycleCount.textContent = cycles;
+        label.textContent = mode === 'focus' ? 'Focus' : mode === 'break' ? 'Short Break' : 'Long Break';
+      };
+
+      const clearTimer = () => {
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+      };
+
+      const playSound = () => {
+        if (soundSelect.value === 'mute') return;
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        oscillator.type = soundSelect.value === 'pulse' ? 'square' : 'sine';
+        oscillator.frequency.setValueAtTime(660, audioCtx.currentTime);
+        gain.gain.value = 0.08;
+        oscillator.connect(gain).connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.25);
+      };
+
+      const setMode = (nextMode, resetTime = true) => {
+        mode = nextMode;
+        if (resetTime) {
+          const durations = getDurations();
+          if (mode === 'focus') secondsRemaining = durations.focus;
+          if (mode === 'break') secondsRemaining = durations.break;
+          if (mode === 'long-break') secondsRemaining = durations.longBreak;
+        }
+        updateDisplay();
+      };
+
+      const completeInterval = () => {
+        clearTimer();
+        const durations = getDurations();
+        if (mode === 'focus') {
+          cycles += 1;
+          playSound();
+          if (cycles % durations.every === 0) {
+            setMode('long-break');
+          } else {
+            setMode('break');
+          }
+        } else {
+          playSound();
+          setMode('focus');
+        }
+      };
+
+      const tick = () => {
+        if (secondsRemaining <= 0) {
+          completeInterval();
+          return;
+        }
+        secondsRemaining -= 1;
+        updateDisplay();
+      };
+
+      const startTimer = () => {
+        if (timerId) return;
+        timerId = setInterval(tick, 1000);
+      };
+
+      buttons.start.addEventListener('click', () => {
+        secondsRemaining = Math.max(1, secondsRemaining);
+        startTimer();
+      });
+
+      buttons.pause.addEventListener('click', clearTimer);
+
+      buttons.reset.addEventListener('click', () => {
+        clearTimer();
+        cycles = 0;
+        setMode('focus');
+      });
+
+      buttons.skip.addEventListener('click', () => {
+        completeInterval();
+      });
+
+      [focusInput, breakInput, longBreakLengthInput, longBreakEveryInput].forEach((input) => {
+        input.addEventListener('change', () => {
+          const durations = getDurations();
+          if (mode === 'focus') secondsRemaining = durations.focus;
+          if (mode === 'break') secondsRemaining = durations.break;
+          if (mode === 'long-break') secondsRemaining = durations.longBreak;
+          updateDisplay();
+        });
+      });
+
+      updateDisplay();
+    })();
+  </script>
+
+</body>
+</html>

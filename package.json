@@ -1,0 +1,26 @@
+{
+  "name": "brahmand-techverse-vanilla-static",
+  "version": "1.0.0",
+  "description": "Brahmand.co modular knowledge hub served via Express",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "build:meta": "node scripts/generate-meta.js"
+  },
+  "keywords": [
+    "brahmand",
+    "knowledge",
+    "express",
+    "static-site"
+  ],
+  "author": "Brahmand Platform",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "csv-parse": "^6.1.0",
+    "dayjs": "^1.11.19",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "node-fetch": "^3.3.2"
+  }
+}

@@ -1,0 +1,79 @@
+[
+  {
+    "title": "About Brahmand.co",
+    "description": "Learn how Brahmand stitches Techverse, Finverse, Healthverse, and Skillverse into one monetizable knowledge platform.",
+    "url": "/about.html",
+    "verse": "Core",
+    "type": "page"
+  },
+  {
+    "title": "Brahmand.co – Techverse, Finverse, Healthverse & Skillverse",
+    "description": "Brahmand.co is the universal knowledge graph for builders. Explore Techverse, Finverse, Healthverse, and Skillverse with tools, templates, and insights.",
+    "url": "/",
+    "verse": "Core",
+    "type": "page"
+  },
+  {
+    "title": "Brahmand Privacy Policy",
+    "description": "Understand how Brahmand.co handles analytics, ad technology, and tool preferences.",
+    "url": "/privacy.html",
+    "verse": "Core",
+    "type": "page"
+  },
+  {
+    "title": "Brahmand Terms of Service",
+    "description": "Terms governing the Brahmand.co knowledge platform and tools.",
+    "url": "/terms.html",
+    "verse": "Core",
+    "type": "page"
+  },
+  {
+    "title": "Focus Timer – Brahmand Tools",
+    "description": "Launch the Brahmand focus timer for Pomodoro-style sprints with automatic long breaks.",
+    "url": "/tools/focus-timer.html",
+    "verse": "Tools",
+    "type": "tool"
+  },
+  {
+    "title": "Brahmand Tools",
+    "description": "Explore Brahmand utilities including the focus timer built for Pomodoro loops.",
+    "url": "/tools/index.html",
+    "verse": "Tools",
+    "type": "tool"
+  },
+  {
+    "title": "AI Tool Stack 2025: Orchestrate Agents That Actually Ship",
+    "description": "Layer Claude, GPT-4.2, Gemini 1.5, and open-source copilots into one Techverse workflow.",
+    "url": "/techverse/ai-tools.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Canva vs Figma for Startup Creators",
+    "description": "Break down velocity, collaboration, and shipment quality before you pick Canva or Figma.",
+    "url": "/techverse/canva-vs-figma.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Chrome Extensions We Actually Keep Pinned",
+    "description": "A curated Chrome stack for QA, automation, and growth experiments inside Techverse.",
+    "url": "/techverse/chrome-extensions.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Techverse – Brahmand.co",
+    "description": "The Techverse hub curates AI tools, templates, and workflows for modern builders.",
+    "url": "/techverse/index.html",
+    "verse": "Techverse",
+    "type": "article"
+  },
+  {
+    "title": "Notion Templates Vault for Operators",
+    "description": "Run growth, investor updates, and product ops from these Notion bases built for Techverse.",
+    "url": "/techverse/notion-templates.html",
+    "verse": "Techverse",
+    "type": "article"
+  }
+]
