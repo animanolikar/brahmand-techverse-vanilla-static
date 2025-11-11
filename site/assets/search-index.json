@@ -126,6 +126,13 @@
     "type": "article"
   },
   {
+    "title": "Search Brahmand",
+    "description": "Search every Brahmand verse instantly.",
+    "url": "/search/index.html",
+    "verse": "Search",
+    "type": "page"
+  },
+  {
     "title": "7-Day Sleep Reset Protocol",
     "description": "A one-week protocol to recalibrate circadian rhythm and deep sleep.",
     "url": "/healthverse/7-day-sleep-reset.html",

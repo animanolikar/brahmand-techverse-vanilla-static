@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Metabolic Morning Playbook</title>
-  <meta name="description" content="Stack light, movement, and macros to stabilize energy before noon.">
+  <title>Search Brahmand</title>
+  <meta name="description" content="Search every Brahmand verse instantly.">
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,43 +94,27 @@
   </header>
   <!-- SITE-NAV-END -->
   <main>
-    <section class="article-grid">
-      <article class="glass-panel article-content">
-        <div class="article-meta">
-          <span class="badge">Playbook</span>
-          <span>Healthverse</span>
+    <section class="section">
+      <div class="section-title">Search Brahmand</div>
+      <p>Instantly filter Techverse, Finverse, Healthverse, Skillverse, and tools.</p>
+      <div class="glass-panel" style="margin-top:1rem;">
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Type anything...">
+          <select id="verse-filter">
+            <option value="all">All verses</option>
+            <option value="Techverse">Techverse</option>
+            <option value="Finverse">Finverse</option>
+            <option value="Healthverse">Healthverse</option>
+            <option value="Skillverse">Skillverse</option>
+            <option value="Tools">Tools</option>
+          </select>
         </div>
-        <h1>Metabolic Morning Playbook</h1>
-        <p class="tagline">These micro-habits prevent afternoon crashes and keep dopamine steady.</p>
-
-        <h2>Light & hydration</h2>
-        <ul class="list">
-          <li>Sun + 500 ml mineral water within 10 minutes.</li><li>Add pinch of salt + lemon to jumpstart electrolytes.</li>
-        </ul>
-
-        <h2>Movement primer</h2>
-        <ul class="list">
-          <li>5-minute jump rope or walk.</li><li>90-second cold face splash for alertness.</li>
-        </ul>
-
-        <h2>Macros</h2>
-        <ul class="list">
-          <li>Protein-forward breakfast (25g+).</li><li>Fiber from berries or chia pudding.</li><li>Delay heavy carbs until first work block ships.</li>
-        </ul>
-        <div class="related-links">
-          <strong>You might also like:</strong>
-          <a href="/healthverse/desk-detox.html">Desk Detox</a><a href="/healthverse/longevity-sprint.html">Longevity Sprint</a><a href="/finverse/cash-flow-ladder.html">Cash-flow Ladder</a>
-        </div>
-      </article>
-      <aside class="sidebar-sticky">
-        <div data-sticky-ad></div>
-        <div class="glass-panel" style="margin-top:1.25rem;">
-          <h3>Healthverse download</h3>
-          <p>Grab the Healthverse template pack with trackers and playbooks.</p>
-          <a class="btn-primary" href="/about.html">Download pack</a>
-        </div>
-      </aside>
+        <p id="search-meta" style="color:var(--muted);">Loading index...</p>
+      </div>
+      <div id="search-results" class="grid" style="margin-top:1.5rem;"></div>
+      <div data-sticky-ad style="margin-top:1.5rem;"></div>
     </section>
+
   </main>
 <footer>
     <div class="footer-grid">
@@ -158,6 +142,7 @@
       </div>
     </div>
   </footer>
+
 <div class="banner-consent" data-consent-banner>
     <p>We use cookies + local storage to personalize content and measure monetization experiments. Do you accept?</p>
     <div class="banner-actions">
@@ -165,6 +150,57 @@
       <button class="button-secondary" data-consent-action="declined">Decline</button>
     </div>
   </div>
+
   <script src="/assets/js/main.js" defer></script>
+  <script>
+    (() => {
+      const input = document.getElementById('search-input');
+      const filter = document.getElementById('verse-filter');
+      const resultsContainer = document.getElementById('search-results');
+      const meta = document.getElementById('search-meta');
+      let documents = [];
+
+      const renderResults = (items) => {
+        resultsContainer.innerHTML = '';
+        if (!items.length) {
+          meta.textContent = 'No matches yet. Try another term.';
+          return;
+        }
+        meta.textContent = `${items.length} matches`;
+        items.forEach((item) => {
+          const article = document.createElement('article');
+          article.className = 'card';
+          article.innerHTML = `<p class="badge">${item.verse}</p><h3>${item.title}</h3><p>${item.description}</p><a href="${item.url}">Open →</a>`;
+          resultsContainer.appendChild(article);
+        });
+      };
+
+      const applySearch = () => {
+        const query = input.value.trim().toLowerCase();
+        const verseFilter = filter.value;
+        const filtered = documents.filter((doc) => {
+          const matchesVerse = verseFilter === 'all' || doc.verse === verseFilter;
+          const haystack = `${doc.title} ${doc.description} ${doc.type}`.toLowerCase();
+          const matchesQuery = query.length === 0 || haystack.includes(query);
+          return matchesVerse && matchesQuery;
+        });
+        renderResults(filtered.slice(0, 24));
+      };
+
+      fetch('/assets/search-index.json')
+        .then((res) => res.json())
+        .then((data) => {
+          documents = data;
+          meta.textContent = `${data.length} documents indexed.`;
+          renderResults(data.slice(0, 12));
+        })
+        .catch(() => {
+          meta.textContent = 'Unable to load search index.';
+        });
+
+      input.addEventListener('input', applySearch);
+      filter.addEventListener('change', applySearch);
+    })();
+  </script>
 </body>
 </html>

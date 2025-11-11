@@ -22,15 +22,21 @@
     }
 
     if (megaToggle && megaMenu) {
+      megaMenu.setAttribute(
+        "aria-hidden",
+        megaMenu.classList.contains("open") ? "false" : "true",
+      );
       const closeMega = () => {
         megaMenu.classList.remove("open");
         megaToggle.setAttribute("aria-expanded", "false");
+        megaMenu.setAttribute("aria-hidden", "true");
       };
 
       megaToggle.addEventListener("click", () => {
         const nextExpanded = megaToggle.getAttribute("aria-expanded") !== "true";
         megaToggle.setAttribute("aria-expanded", nextExpanded.toString());
         megaMenu.classList.toggle("open", nextExpanded);
+        megaMenu.setAttribute("aria-hidden", (!nextExpanded).toString());
       });
 
       megaToggle.addEventListener("keydown", (event) => {
@@ -38,6 +44,7 @@
           event.preventDefault();
           megaMenu.classList.add("open");
           megaToggle.setAttribute("aria-expanded", "true");
+          megaMenu.setAttribute("aria-hidden", "false");
           const firstLink = megaMenu.querySelector("a");
           if (firstLink) firstLink.focus();
         }
