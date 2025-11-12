@@ -8,18 +8,8 @@
   };
 
   const setupNav = () => {
-    const mobileToggle = document.querySelector("[data-nav-toggle]");
-    const mobileMenu = document.querySelector("[data-mobile-menu]");
     const megaToggle = document.querySelector("[data-mega-toggle]");
     const megaMenu = document.querySelector("[data-mega-menu]");
-
-    if (mobileToggle && mobileMenu) {
-      mobileToggle.addEventListener("click", () => {
-        const expanded = mobileToggle.getAttribute("aria-expanded") === "true";
-        mobileToggle.setAttribute("aria-expanded", (!expanded).toString());
-        mobileMenu.classList.toggle("open");
-      });
-    }
 
     if (megaToggle && megaMenu) {
       megaMenu.setAttribute(

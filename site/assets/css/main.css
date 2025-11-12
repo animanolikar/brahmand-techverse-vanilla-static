@@ -462,21 +462,11 @@ label {
 
 @media (max-width: 768px) {
   nav ul {
-    display: none;
-  }
-
-  .mobile-nav-toggle {
-    display: inline-flex;
-  }
-
-  .mobile-menu.open {
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    margin-top: 1rem;
-    background: rgba(5, 7, 18, 0.95);
+  }
+
+  nav li {
+    flex: 1 1 calc(50% - 0.75rem);
   }
 }
