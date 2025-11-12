@@ -482,7 +482,7 @@ label {
   }
 }
 
-body.theme-light {
+:root[data-theme="light"] {
   --bg: #f4f6fb;
   --bg-alt: #ffffff;
   --text: #111322;
@@ -496,29 +496,29 @@ body.theme-light {
   --card-bg: #ffffff;
 }
 
-body.theme-light {
+[data-theme="light"] body {
   background: radial-gradient(circle at top, rgba(93, 45, 255, 0.15), transparent 45%),
     radial-gradient(circle at 20% 20%, rgba(24, 169, 153, 0.15), transparent 35%),
     var(--bg);
   color: var(--text);
 }
 
-body.theme-light header {
+[data-theme="light"] header {
   background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid var(--border);
 }
 
-body.theme-light .mega-menu {
+[data-theme="light"] .mega-menu {
   background: rgba(255, 255, 255, 0.97);
   border-color: var(--border);
 }
 
-body.theme-light footer {
+[data-theme="light"] footer {
   background: rgba(255, 255, 255, 0.8);
   color: var(--text);
 }
 
-body.theme-light .banner-consent {
+[data-theme="light"] .banner-consent {
   background: rgba(255, 255, 255, 0.9);
   color: var(--text);
 }

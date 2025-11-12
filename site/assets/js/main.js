@@ -103,6 +103,7 @@
       }
     })();
 
+    const root = document.documentElement;
     const getStoredTheme = () => (storage ? storage.getItem(storageKey) : null);
     const setStoredTheme = (value) => {
       if (!storage) return;
@@ -120,6 +121,7 @@
     let currentTheme = savedTheme || systemPreference();
 
     const applyTheme = (theme, persist = true) => {
+      root.setAttribute("data-theme", theme);
       document.body.classList.toggle("theme-light", theme === "light");
       toggle.textContent = theme === "light" ? "☀" : "☾";
       toggle.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
