@@ -87,9 +87,38 @@
     });
   };
 
+  const setupThemeToggle = () => {
+    const toggle = document.querySelector("[data-theme-toggle]");
+    if (!toggle) return;
+
+    const storageKey = "brahmand-theme";
+    const prefersLight = window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: light)").matches;
+    const savedTheme = localStorage.getItem(storageKey);
+    let currentTheme = savedTheme || (prefersLight ? "light" : "dark");
+
+    const applyTheme = (theme) => {
+      document.body.classList.toggle("theme-light", theme === "light");
+      toggle.textContent = theme === "light" ? "☀" : "☾";
+      toggle.setAttribute("aria-pressed", theme === "light");
+    };
+
+    applyTheme(currentTheme);
+    localStorage.setItem(storageKey, currentTheme);
+
+    toggle.addEventListener("click", () => {
+      currentTheme = document.body.classList.contains("theme-light")
+        ? "dark"
+        : "light";
+      applyTheme(currentTheme);
+      localStorage.setItem(storageKey, currentTheme);
+    });
+  };
+
   onReady(() => {
     setupNav();
     setupConsentBanner();
     setupStickyAds();
+    setupThemeToggle();
   });
 })();

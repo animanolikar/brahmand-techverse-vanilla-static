@@ -9,6 +9,7 @@
   --glass: rgba(255, 255, 255, 0.08);
   --border: rgba(255, 255, 255, 0.12);
   --shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+  --card-bg: rgba(8, 10, 24, 0.85);
   --radius-lg: 24px;
   --radius-md: 16px;
   --radius-sm: 10px;
@@ -173,7 +174,7 @@ nav a {
   border-radius: var(--radius-md);
   padding: 1.5rem;
   border: 1px solid var(--border);
-  background: rgba(8, 10, 24, 0.85);
+  background: var(--card-bg);
   transition: transform var(--transition), border-color var(--transition);
   min-height: 240px;
 }
@@ -430,6 +431,16 @@ label {
   cursor: pointer;
 }
 
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  padding: 0;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -469,4 +480,45 @@ label {
   nav li {
     flex: 1 1 calc(50% - 0.75rem);
   }
+}
+
+body.theme-light {
+  --bg: #f4f6fb;
+  --bg-alt: #ffffff;
+  --text: #111322;
+  --muted: #4c5066;
+  --accent: #5d2dff;
+  --accent-2: #18a999;
+  --accent-3: #ff6b4a;
+  --glass: rgba(255, 255, 255, 0.9);
+  --border: rgba(0, 0, 0, 0.08);
+  --shadow: 0 10px 25px rgba(15, 18, 33, 0.12);
+  --card-bg: #ffffff;
+}
+
+body.theme-light {
+  background: radial-gradient(circle at top, rgba(93, 45, 255, 0.15), transparent 45%),
+    radial-gradient(circle at 20% 20%, rgba(24, 169, 153, 0.15), transparent 35%),
+    var(--bg);
+  color: var(--text);
+}
+
+body.theme-light header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--border);
+}
+
+body.theme-light .mega-menu {
+  background: rgba(255, 255, 255, 0.97);
+  border-color: var(--border);
+}
+
+body.theme-light footer {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+}
+
+body.theme-light .banner-consent {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
 }
