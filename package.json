@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "node server.js",
-    "build:meta": "node scripts/generate-meta.js"
+    "build:meta": "node scripts/generate-meta.js",
+    "build:og": "node scripts/generate-og-images.js"
   },
   "keywords": [
     "brahmand",
@@ -21,6 +22,7 @@
     "dayjs": "^1.11.19",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^24.29.1"
   }
 }
