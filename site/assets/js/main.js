@@ -92,27 +92,60 @@
     if (!toggle) return;
 
     const storageKey = "brahmand-theme";
-    const prefersLight = window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: light)").matches;
-    const savedTheme = localStorage.getItem(storageKey);
-    let currentTheme = savedTheme || (prefersLight ? "light" : "dark");
+    const storage = (() => {
+      try {
+        const testKey = "__brahmand-theme-test";
+        window.localStorage.setItem(testKey, "1");
+        window.localStorage.removeItem(testKey);
+        return window.localStorage;
+      } catch (error) {
+        return null;
+      }
+    })();
 
-    const applyTheme = (theme) => {
-      document.body.classList.toggle("theme-light", theme === "light");
-      toggle.textContent = theme === "light" ? "☀" : "☾";
-      toggle.setAttribute("aria-pressed", theme === "light");
+    const getStoredTheme = () => (storage ? storage.getItem(storageKey) : null);
+    const setStoredTheme = (value) => {
+      if (!storage) return;
+      storage.setItem(storageKey, value);
     };
 
-    applyTheme(currentTheme);
-    localStorage.setItem(storageKey, currentTheme);
+    const mediaQuery = window.matchMedia
+      ? window.matchMedia("(prefers-color-scheme: light)")
+      : null;
+    const systemPreference = () =>
+      mediaQuery && mediaQuery.matches ? "light" : "dark";
+
+    const savedTheme = getStoredTheme();
+    let manualOverride = Boolean(savedTheme);
+    let currentTheme = savedTheme || systemPreference();
+
+    const applyTheme = (theme, persist = true) => {
+      document.body.classList.toggle("theme-light", theme === "light");
+      toggle.textContent = theme === "light" ? "☀" : "☾";
+      toggle.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+      if (persist) setStoredTheme(theme);
+    };
+
+    applyTheme(currentTheme, manualOverride);
 
     toggle.addEventListener("click", () => {
-      currentTheme = document.body.classList.contains("theme-light")
-        ? "dark"
-        : "light";
+      currentTheme = document.body.classList.contains("theme-light") ? "dark" : "light";
+      manualOverride = true;
       applyTheme(currentTheme);
-      localStorage.setItem(storageKey, currentTheme);
     });
+
+    if (mediaQuery) {
+      const handleChange = (event) => {
+        if (manualOverride) return;
+        currentTheme = event.matches ? "light" : "dark";
+        applyTheme(currentTheme, false);
+      };
+      if (typeof mediaQuery.addEventListener === "function") {
+        mediaQuery.addEventListener("change", handleChange);
+      } else if (typeof mediaQuery.addListener === "function") {
+        mediaQuery.addListener(handleChange);
+      }
+    }
   };
 
   onReady(() => {
