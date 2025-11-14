@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article Editor • Brahmand</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #020617;
+        --panel: rgba(15, 23, 42, 0.8);
+        --border: rgba(148, 163, 184, 0.2);
+        --muted: #94a3b8;
+        --text: #f8fafc;
+        --accent: #7c4dff;
+        --accent-strong: #5f2bff;
+        --danger: #f87171;
+        --success: #4ade80;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #0f172a, #020617 65%);
+        color: var(--text);
+        font-family: "Inter", system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        padding: 20px 32px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(12px);
+      }
+
+      header a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 10px 18px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #fff;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border-color: var(--border);
+        color: var(--text);
+      }
+
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        min-height: 0;
+      }
+
+      .sidebar {
+        border-right: 1px solid var(--border);
+        padding: 24px;
+        overflow-y: auto;
+      }
+
+      .sidebar h2 {
+        margin-top: 0;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        background: rgba(2, 6, 23, 0.8);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-size: 1rem;
+        margin-bottom: 14px;
+      }
+
+      textarea.markdown {
+        min-height: 100%;
+        resize: none;
+      }
+
+      .editor-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        min-height: 0;
+      }
+
+      .editor-pane {
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid var(--border);
+      }
+
+      .editor-pane textarea {
+        flex: 1;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
+      }
+
+      .preview {
+        padding: 24px;
+        overflow-y: auto;
+        background: rgba(2, 6, 23, 0.6);
+      }
+
+      .preview h1,
+      .preview h2 {
+        margin-top: 0;
+      }
+
+      .status-bar {
+        margin-top: 16px;
+        font-size: 0.9rem;
+        color: var(--muted);
+        min-height: 24px;
+      }
+
+      .status-bar.success {
+        color: var(--success);
+      }
+
+      .status-bar.error {
+        color: var(--danger);
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .link-suggestions {
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 18px;
+      }
+
+      .link-suggestions ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .link-suggestions li {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 1100px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+        .editor-area {
+          grid-template-columns: 1fr;
+        }
+        .editor-pane {
+          border-left: none;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div>
+        <a href="/admin/dashboard.html">← Back to dashboard</a>
+        <h1 style="margin: 6px 0 0">Article Editor</h1>
+      </div>
+      <button id="logoutBtn" class="btn-secondary" type="button">Log out</button>
+    </header>
+
+    <main>
+      <aside class="sidebar">
+        <h2>Metadata</h2>
+        <form id="articleForm">
+          <label for="title">Title</label>
+          <input id="title" name="title" placeholder="Edge AI sensors for rail safety" required />
+
+          <label for="slug">Slug</label>
+          <input id="slug" name="slug" placeholder="edge-ai-sensors" required />
+
+          <label for="verse">Verse</label>
+          <select id="verse" name="verse" required></select>
+
+          <label for="status">Status</label>
+          <select id="status" name="status">
+            <option value="draft">Draft</option>
+            <option value="review">In Review</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="published">Published</option>
+          </select>
+
+          <label for="publish_at">Publish at</label>
+          <input id="publish_at" name="publish_at" type="datetime-local" />
+
+          <label for="schema_type">Schema</label>
+          <select id="schema_type" name="schema_type">
+            <option value="none">None</option>
+            <option value="faq">FAQ</option>
+            <option value="howto">HowTo</option>
+            <option value="custom">Custom JSON-LD</option>
+          </select>
+
+          <label for="meta_title">Meta title</label>
+          <input id="meta_title" name="meta_title" maxlength="255" />
+
+          <label for="meta_desc">Meta description</label>
+          <textarea id="meta_desc" name="meta_desc" rows="3" maxlength="320"></textarea>
+
+          <div class="link-suggestions">
+            <strong>Link suggestions</strong>
+            <ul id="linkList"></ul>
+          </div>
+
+          <div class="actions">
+            <button class="btn-secondary" data-action="draft" type="button">Save draft</button>
+            <button class="btn-secondary" data-action="review" type="button">Submit review</button>
+            <button class="btn-secondary" data-action="schedule" type="button">Schedule</button>
+            <button class="btn-primary" data-action="publish" type="button">Publish now</button>
+          </div>
+        </form>
+        <div id="statusBar" class="status-bar"></div>
+        <div id="filePath" class="status-bar"></div>
+      </aside>
+      <section class="editor-area">
+        <div class="editor-pane">
+          <label for="markdown" style="padding: 16px; margin: 0">Markdown</label>
+          <textarea id="markdown" class="markdown" placeholder="Write the body in Markdown…" spellcheck="false"></textarea>
+        </div>
+        <div class="editor-pane">
+          <label style="padding: 16px; margin: 0">Preview</label>
+          <article id="preview" class="preview"></article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const qs = new URLSearchParams(window.location.search);
+      const articleId = qs.get("id");
+
+      const form = document.getElementById("articleForm");
+      const markdownInput = document.getElementById("markdown");
+      const preview = document.getElementById("preview");
+      const statusBar = document.getElementById("statusBar");
+      const filePathDisplay = document.getElementById("filePath");
+      const verseSelect = document.getElementById("verse");
+      const linkList = document.getElementById("linkList");
+      const publishAtInput = document.getElementById("publish_at");
+      const titleInput = document.getElementById("title");
+      const slugInput = document.getElementById("slug");
+
+      function showStatus(message, variant = "") {
+        statusBar.textContent = message;
+        statusBar.className = `status-bar ${variant}`;
+      }
+
+      function updatePreview() {
+        const raw = markdownInput.value;
+        if (window.marked) {
+          preview.innerHTML = window.marked.parse(raw || "Start typing to preview…");
+        } else {
+          preview.textContent = raw;
+        }
+      }
+
+      function updateFilePath() {
+        const verse = verseSelect.value || "{verse}";
+        const slug = slugInput.value || "{slug}";
+        filePathDisplay.textContent = `/content/${verse}/${slug}.md`;
+      }
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          ...options,
+        });
+
+        if (response.status === 401) {
+          showStatus("Session expired. Redirecting…", "error");
+          setTimeout(() => (window.location.href = "/admin/"), 1200);
+          return null;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+
+        return response.json();
+      }
+
+      async function loadVerses() {
+        const payload = await fetchJSON("/api/verses");
+        verseSelect.innerHTML = "";
+        (payload?.verses || []).forEach((verse) => {
+          const option = document.createElement("option");
+          option.value = verse.code;
+          option.textContent = verse.title;
+          verseSelect.appendChild(option);
+        });
+      }
+
+      async function loadArticle() {
+        if (!articleId) return;
+        const payload = await fetchJSON(`/api/articles/${articleId}`);
+        if (!payload?.article) return;
+        const article = payload.article;
+        titleInput.value = article.title || "";
+        slugInput.value = article.slug || "";
+        verseSelect.value = article.verse_code || article.verse || verseSelect.value;
+        form.status.value = article.status || "draft";
+        form.schema_type.value = article.schema_type || "none";
+        form.meta_title.value = article.meta_title || "";
+        form.meta_desc.value = article.meta_desc || "";
+        if (article.publish_at) {
+          publishAtInput.value = new Date(article.publish_at).toISOString().slice(0, 16);
+        }
+        markdownInput.value = article.markdown || "";
+        updatePreview();
+        showStatus(`Loaded ${article.slug}`, "success");
+        updateFilePath();
+        loadLinkSuggestions(article.verse_code, articleId);
+      }
+
+      async function loadLinkSuggestions(verse, id) {
+        try {
+          const endpoint = id
+            ? `/api/articles/${id}/suggest-links`
+            : `/api/articles/suggest-links?verse=${verse || ""}`;
+          const payload = await fetchJSON(endpoint);
+          linkList.innerHTML = "";
+          (payload?.links || []).forEach((link) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<span>${link.title}</span><a href="${link.url}" target="_blank">Insert</a>`;
+            li.querySelector("a").addEventListener("click", (event) => {
+              event.preventDefault();
+              insertLink(link);
+            });
+            linkList.appendChild(li);
+          });
+        } catch (error) {
+          showStatus(error.message, "error");
+        }
+      }
+
+      function insertLink(link) {
+        const selection = window.getSelection().toString() || link.title;
+        const snippet = `[${selection}](${link.url})`;
+        const cursorPos = markdownInput.selectionStart || 0;
+        const value = markdownInput.value;
+        markdownInput.value = `${value.slice(0, cursorPos)}${snippet}${value.slice(cursorPos)}`;
+        updatePreview();
+      }
+
+      async function saveArticle(action) {
+        const payload = {
+          title: form.title.value,
+          slug: form.slug.value,
+          verse: form.verse.value,
+          status: form.status.value,
+          schema_type: form.schema_type.value,
+          meta_title: form.meta_title.value,
+          meta_desc: form.meta_desc.value,
+          publish_at: publishAtInput.value ? new Date(publishAtInput.value).toISOString() : null,
+          markdown: markdownInput.value,
+        };
+
+        if (action === "draft") payload.status = "draft";
+        if (action === "review") payload.status = "review";
+        if (action === "schedule") payload.status = "scheduled";
+
+        const method = articleId ? "PATCH" : "POST";
+        const url = articleId ? `/api/articles/${articleId}` : "/api/articles";
+        const response = await fetchJSON(url, {
+          method,
+          body: JSON.stringify(payload),
+        });
+
+        if (!response?.article) return;
+
+        if (!articleId) {
+          window.history.replaceState({}, "", `/admin/editor.html?id=${response.article.id}`);
+        }
+
+        showStatus(`Saved ${response.article.slug}`, "success");
+        loadLinkSuggestions(response.article.verse_code, response.article.id);
+      }
+
+      async function publishNow() {
+        if (!articleId) {
+          await saveArticle("review");
+        }
+        const payload = await fetchJSON(`/api/articles/${articleId}/publish`, {
+          method: "POST",
+        });
+        showStatus(`Published ${payload.article.slug}`, "success");
+      }
+
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const action = button.getAttribute("data-action");
+          try {
+            if (action === "publish") {
+              await publishNow();
+            } else {
+              await saveArticle(action);
+            }
+          } catch (error) {
+            showStatus(error.message, "error");
+          }
+        });
+      });
+
+      markdownInput.addEventListener("input", updatePreview);
+      verseSelect.addEventListener("change", () => {
+        loadLinkSuggestions(verseSelect.value, articleId);
+        updateFilePath();
+      });
+
+      titleInput.addEventListener("blur", () => {
+        if (!slugInput.value) {
+          slugInput.value = titleInput.value
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+          updateFilePath();
+        }
+      });
+
+      slugInput.addEventListener("input", updateFilePath);
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      (async function init() {
+        await loadVerses();
+        updateFilePath();
+        updatePreview();
+        if (articleId) {
+          await loadArticle();
+        } else {
+          loadLinkSuggestions(verseSelect.value);
+        }
+      })();
+    </script>
+  </body>
+</html>
+

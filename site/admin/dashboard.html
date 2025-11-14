@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brahmand Admin Console</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #030712;
+        --panel: #0f172a;
+        --border: rgba(255, 255, 255, 0.08);
+        --muted: #94a3b8;
+        --text: #f8fafc;
+        --accent: #7c4dff;
+        --accent-strong: #5f2bff;
+        --danger: #f87171;
+        --success: #4ade80;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Inter", system-ui, sans-serif;
+        background: radial-gradient(circle at top, #142043, #050712 60%);
+        color: var(--text);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        min-height: 100vh;
+      }
+
+      aside {
+        border-right: 1px solid var(--border);
+        padding: 32px 24px;
+        background: rgba(3, 7, 18, 0.85);
+        backdrop-filter: blur(18px);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .logo {
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      nav button {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        text-align: left;
+        padding: 12px 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+      }
+
+      nav button.active,
+      nav button:hover {
+        background: rgba(124, 77, 255, 0.12);
+        color: var(--text);
+      }
+
+      main {
+        padding: 32px 40px 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .title-group h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        letter-spacing: -0.02em;
+      }
+
+      .title-group p {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      button.primary {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      button.secondary {
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        padding: 12px 22px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+
+      section.grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        background: rgba(6, 10, 25, 0.85);
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        padding: 20px;
+        min-height: 180px;
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 1.1rem;
+      }
+
+      .metric {
+        font-size: 2rem;
+        margin: 6px 0;
+        font-weight: 700;
+      }
+
+      ul.list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      ul.list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      ul.list li span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .badge.danger {
+        background: rgba(248, 113, 113, 0.2);
+        color: #fecaca;
+      }
+
+      .badge.success {
+        background: rgba(74, 222, 128, 0.2);
+        color: #dcfce7;
+      }
+
+      .jobs-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .jobs-table th,
+      .jobs-table td {
+        text-align: left;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 24px;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        right: 32px;
+        min-width: 260px;
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        color: #cffafe;
+        padding: 14px 20px;
+        border-radius: 14px;
+        display: none;
+      }
+
+      .toast.show {
+        display: block;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          flex-direction: row;
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside>
+        <div class="logo">BRAHMAND / ADMIN</div>
+        <nav>
+          <button class="active" type="button">Dashboard</button>
+          <button type="button">Articles</button>
+          <button type="button">Calendar</button>
+          <button type="button">SEO & Ads</button>
+          <button type="button">Experiments</button>
+          <button type="button">Automation</button>
+        </nav>
+      </aside>
+      <main>
+        <header>
+          <div class="title-group">
+            <h1>Morning briefing</h1>
+            <p id="subtitle">Loading summary…</p>
+          </div>
+          <div class="actions">
+            <button id="newArticleBtn" class="secondary" type="button">New article</button>
+            <button id="generateBtn" class="primary" type="button">⚡ Generate Site</button>
+            <button id="sitemapBtn" class="secondary" type="button">Ping sitemaps</button>
+            <button id="logoutBtn" class="secondary" type="button">Log out</button>
+          </div>
+        </header>
+
+        <section class="grid" id="metricsGrid">
+          <article class="card">
+            <h2>Core Web Vitals</h2>
+            <div id="vitalsMetric" class="metric">—</div>
+            <p id="vitalsTrend" class="muted"></p>
+          </article>
+          <article class="card">
+            <h2>Revenue snapshot</h2>
+            <div id="revenueMetric" class="metric">—</div>
+            <p id="revenueDetails" class="muted"></p>
+          </article>
+          <article class="card">
+            <h2>SEO alerts</h2>
+            <ul class="list" id="seoAlerts"></ul>
+          </article>
+        </section>
+
+        <section class="grid">
+          <article class="card">
+            <h2>Today’s publish queue</h2>
+            <ul class="list" id="publishQueue"></ul>
+          </article>
+          <article class="card">
+            <h2>Overdue edits</h2>
+            <ul class="list" id="overdueEdits"></ul>
+          </article>
+          <article class="card">
+            <h2>Jobs & automations</h2>
+            <table class="jobs-table" id="jobsTable">
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </article>
+        </section>
+
+        <footer>Need to hit APIs directly? Your `admin_session` cookie is active for 12h.</footer>
+      </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+      const subtitle = document.getElementById("subtitle");
+      const vitalsMetric = document.getElementById("vitalsMetric");
+      const vitalsTrend = document.getElementById("vitalsTrend");
+      const revenueMetric = document.getElementById("revenueMetric");
+      const revenueDetails = document.getElementById("revenueDetails");
+      const publishQueueEl = document.getElementById("publishQueue");
+      const overdueEditsEl = document.getElementById("overdueEdits");
+      const seoAlertsEl = document.getElementById("seoAlerts");
+      const jobsTableBody = document.querySelector("#jobsTable tbody");
+      const toast = document.getElementById("toast");
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          ...options,
+        });
+
+        if (response.status === 401) {
+          window.location.href = "/admin/";
+          return null;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+
+        return response.json();
+      }
+
+      function renderList(target, items, formatter) {
+        target.innerHTML = "";
+        if (!items?.length) {
+          target.innerHTML = '<li><span>No items right now.</span></li>';
+          return;
+        }
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.innerHTML = formatter(item);
+          target.appendChild(li);
+        });
+      }
+
+      function showToast(message, variant = "info") {
+        toast.textContent = message;
+        toast.className = `toast show ${variant}`;
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2500);
+      }
+
+      async function hydrateDashboard() {
+        try {
+          const summaryPayload = await fetchJSON("/api/dashboard/summary");
+          const summary = summaryPayload?.data;
+
+          if (!summary) {
+            return;
+          }
+
+          subtitle.textContent = `Updated ${new Date(summaryPayload.generated_at).toLocaleString()}`;
+          vitalsMetric.textContent = summary.vitals?.lcp || "—";
+          vitalsTrend.textContent = `CLS ${summary.vitals?.cls} · INP ${summary.vitals?.inp} · ${summary.vitals?.trend}`;
+
+          revenueMetric.textContent = `$${summary.revenue?.adsense?.toLocaleString?.() || "—"}`;
+          revenueDetails.textContent = `RPM $${summary.revenue?.rpm} · GA4 $${summary.revenue?.ga4} · ${summary.revenue?.delta}`;
+
+          renderList(
+            publishQueueEl,
+            summary.publish_queue,
+            (item) => `
+              <div>
+                <strong>${item.title}</strong>
+                <span>${item.verse} · ${item.status}</span>
+              </div>
+              <span class="badge">${item.publish_at ? new Date(item.publish_at).toLocaleTimeString() : "TBD"}</span>
+            `,
+          );
+
+          renderList(
+            overdueEditsEl,
+            summary.overdue_edits,
+            (item) => `
+              <div>
+                <strong>${item.title}</strong>
+                <span>${item.owner}</span>
+              </div>
+              <span class="badge danger">Due ${item.due}</span>
+            `,
+          );
+
+          renderList(
+            seoAlertsEl,
+            summary.seo_alerts,
+            (item) => `<div><strong>${item.type}</strong><br /><span>${item.message}</span></div>`,
+          );
+
+          renderJobs(summary.jobs);
+        } catch (error) {
+          subtitle.textContent = error.message;
+          showToast(error.message, "danger");
+        }
+      }
+
+      function renderJobs(jobs) {
+        jobsTableBody.innerHTML = "";
+        if (!jobs?.length) {
+          const row = document.createElement("tr");
+          row.innerHTML = '<td colspan="3">No jobs yet.</td>';
+          jobsTableBody.appendChild(row);
+          return;
+        }
+
+        jobs.forEach((job) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${job.type}</td>
+            <td><span class="badge">${job.status}</span></td>
+            <td>${new Date(job.created_at).toLocaleTimeString()}</td>
+          `;
+          jobsTableBody.appendChild(row);
+        });
+      }
+
+      async function triggerBuild() {
+        try {
+          const payload = await fetchJSON("/api/build", { method: "POST", body: JSON.stringify({ reason: "manual_dashboard" }) });
+          showToast(payload.message || "Build enqueued", "success");
+          hydrateDashboard();
+        } catch (error) {
+          showToast(error.message, "danger");
+        }
+      }
+
+      async function pingSitemaps() {
+        try {
+          const payload = await fetchJSON("/api/sitemap/ping", { method: "POST" });
+          const engines = (payload.results || []).map((r) => `${r.engine}:${r.ok ? "ok" : "fail"}`).join(" · ");
+          showToast(`Sitemaps pinged (${engines})`, "success");
+        } catch (error) {
+          showToast(error.message, "danger");
+        }
+      }
+
+      document.getElementById("generateBtn").addEventListener("click", triggerBuild);
+      document.getElementById("sitemapBtn").addEventListener("click", pingSitemaps);
+      document.getElementById("newArticleBtn").addEventListener("click", () => {
+        window.location.href = "/admin/editor.html";
+      });
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      hydrateDashboard();
+    </script>
+  </body>
+</html>

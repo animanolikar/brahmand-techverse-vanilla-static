@@ -5,8 +5,11 @@
   "main": "server.js",
   "scripts": {
     "dev": "node server.js",
+    "dev:watch": "nodemon --legacy-watch server.js",
     "build:meta": "node scripts/generate-meta.js",
-    "build:og": "node scripts/generate-og-images.js"
+    "build:og": "node scripts/generate-og-images.js",
+    "create:admin": "node scripts/create-admin-user.js",
+    "build:site": "node scripts/build-site.js"
   },
   "keywords": [
     "brahmand",
@@ -17,12 +20,26 @@
   "author": "Brahmand Platform",
   "license": "MIT",
   "dependencies": {
+    "@mdx-js/mdx": "^3.0.0",
+    "argon2": "^0.44.0",
     "compression": "^1.8.1",
     "csv-parse": "^6.1.0",
     "dayjs": "^1.11.19",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "html-minifier": "^4.0.0",
+    "jsdom": "^26.1.0",
+    "mysql2": "^3.15.3",
     "node-fetch": "^3.3.2",
-    "puppeteer": "^24.29.1"
+    "puppeteer": "^24.29.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-html": "^16.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
