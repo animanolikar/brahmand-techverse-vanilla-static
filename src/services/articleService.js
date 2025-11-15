@@ -2,6 +2,9 @@
 
 const path = require("path");
 const fs = require("fs");
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
 const { pool } = require("../config/db");
 const { slugify } = require("../utils/stringHelpers");
 
@@ -15,6 +18,17 @@ function ensureContentDir(verseCode) {
 
 function articleFilePath(verseCode, slug) {
   return path.join(CONTENT_ROOT, verseCode, `${slug}.md`);
+}
+
+function formatDateForDb(value) {
+  if (!value) {
+    return null;
+  }
+  const date = dayjs(value);
+  if (!date.isValid()) {
+    return null;
+  }
+  return date.utc().format("YYYY-MM-DD HH:mm:ss");
 }
 
 async function listArticles(filters = {}) {
@@ -67,6 +81,33 @@ async function listArticles(filters = {}) {
   }));
 }
 
+async function listArticlesByRange(start, end) {
+  const startDate = start ? new Date(start) : new Date(Date.now() - 1000 * 60 * 60 * 24 * 14);
+  const endDate = end ? new Date(end) : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+
+  const [rows] = await pool.query(
+    `SELECT a.id,
+            a.slug,
+            a.title,
+            a.status,
+            a.publish_at,
+            v.code AS verse
+     FROM articles a
+     INNER JOIN verses v ON v.id = a.verse_id
+     WHERE a.publish_at BETWEEN ? AND ?
+     ORDER BY a.publish_at ASC`,
+    [startDate, endDate],
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    verse: row.verse,
+    status: row.status,
+    publish_at: row.publish_at,
+  }));
+}
+
 async function getArticleById(articleId) {
   const [rows] = await pool.query(
     `SELECT a.*, v.code AS verse_code
@@ -97,7 +138,7 @@ async function getArticleById(articleId) {
 
 async function createArticle(payload, userId) {
   const verseCode = payload.verse;
-  const slug = slugify(payload.slug || payload.title);
+  const slug = await ensureUniqueSlug(verseCode, payload.slug || payload.title);
 
   const [verseRows] = await pool.query(`SELECT id FROM verses WHERE code = ? LIMIT 1`, [verseCode]);
   if (!verseRows[0]) {
@@ -107,6 +148,7 @@ async function createArticle(payload, userId) {
   const verseId = verseRows[0].id;
 
   const markdownBody = payload.markdown || payload.body_md || "";
+  const publishAt = formatDateForDb(payload.publish_at);
   const now = new Date();
 
   const [result] = await pool.query(
@@ -124,7 +166,7 @@ async function createArticle(payload, userId) {
       payload.meta_title || null,
       payload.meta_desc || null,
       payload.schema_type || "none",
-      payload.publish_at || null,
+      publishAt,
       markdownBody,
       userId,
       userId,
@@ -152,7 +194,7 @@ async function updateArticle(articleId, payload, userId) {
     meta_desc: payload.meta_desc ?? article.meta_desc,
     schema_type: payload.schema_type ?? article.schema_type,
     status: payload.status ?? article.status,
-    publish_at: payload.publish_at ?? article.publish_at,
+    publish_at: formatDateForDb(payload.publish_at) ?? article.publish_at,
     body_md: payload.markdown ?? article.markdown,
   };
 
@@ -181,6 +223,22 @@ async function updateArticle(articleId, payload, userId) {
   return true;
 }
 
+async function updateArticleSchedule(articleId, publishAt, status, userId) {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new Error("Article not found");
+  }
+
+  await pool.query(
+    `UPDATE articles
+     SET publish_at = ?, status = ?, updated_by = ?, updated_at = NOW()
+     WHERE id = ?`,
+    [formatDateForDb(publishAt), status || article.status, userId, articleId],
+  );
+
+  return getArticleById(articleId);
+}
+
 async function publishArticle(articleId, userId) {
   const article = await getArticleById(articleId);
   if (!article) {
@@ -203,8 +261,38 @@ async function publishArticle(articleId, userId) {
 
 module.exports = {
   listArticles,
+  listArticlesByRange,
   getArticleById,
   createArticle,
   updateArticle,
+  updateArticleSchedule,
   publishArticle,
 };
+
+async function ensureUniqueSlug(verseCode, desiredSlug) {
+  let baseSlug = slugify(desiredSlug);
+  if (!baseSlug) {
+    baseSlug = `article-${Date.now()}`;
+  }
+
+  let finalSlug = baseSlug;
+  let attempt = 1;
+
+  while (await slugExists(verseCode, finalSlug)) {
+    finalSlug = `${baseSlug}-${attempt++}`;
+  }
+
+  return finalSlug;
+}
+
+async function slugExists(verseCode, slug) {
+  const [rows] = await pool.query(
+    `SELECT a.id
+     FROM articles a
+     INNER JOIN verses v ON v.id = a.verse_id
+     WHERE v.code = ? AND a.slug = ?
+     LIMIT 1`,
+    [verseCode, slug],
+  );
+  return Boolean(rows[0]);
+}

@@ -12,7 +12,7 @@ const dbConfig = {
   queueLimit: 0,
   timezone: "Z",
   multipleStatements: false,
-  connectTimeout: 20000
+  connectTimeout: Number(process.env.MYSQL_CONNECT_TIMEOUT || 20000),
 };
 
 const pool = mysql.createPool(dbConfig);
@@ -32,4 +32,3 @@ module.exports = {
   dbConfig,
   pingDatabase,
 };
-

@@ -15,6 +15,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    main{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px 3rem;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+    }
+    .grid .card{
+      min-height:180px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    @media (max-width:640px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 <!-- SITE-NAV-START -->
@@ -79,6 +102,8 @@
             <li><a href="/tools/focus-timer.html">Focus Timer</a></li>
             <li><a href="/tools/text-cleaner.html">Text Cleaner</a></li>
             <li><a href="/tools/image-resizer.html">Image Resizer</a></li>
+            <li><a href="/tools/loan-emi-calculator.html">Loan EMI Calculator</a></li>
+            <li><a href="/tools/adsense-revenue-calculator.html">AdSense Revenue Calculator</a></li>
           </ul>
         </div>
       </div>
@@ -105,6 +130,16 @@
           <h3>Image Resizer</h3>
           <p>Resize, convert, and compress hero images locally.</p>
           <a href="/tools/image-resizer.html">Open Image Resizer →</a>
+        </article>
+        <article class="card">
+          <h3>Loan EMI Calculator</h3>
+          <p>Plan repayments across tenures with detailed principal vs interest split.</p>
+          <a href="/tools/loan-emi-calculator.html">Calculate EMI →</a>
+        </article>
+        <article class="card">
+          <h3>AdSense Revenue Calculator</h3>
+          <p>Project AdSense income using RPM, CTR, and CPC inputs for campaign planning.</p>
+          <a href="/tools/adsense-revenue-calculator.html">Estimate revenue →</a>
         </article>
       </div>
       <div class="ad-slot" style="margin-top:2rem;">Sticky sidebar 300×600 – ideal for sponsors.</div>

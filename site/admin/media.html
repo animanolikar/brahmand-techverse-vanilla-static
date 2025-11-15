@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <title>Media Library • Brahmand Admin</title>
+    <style>
+      .upload-panel {
+        background: var(--panel-strong, rgba(6, 10, 25, 0.9));
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+
+      .upload-panel form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .upload-panel input[type="file"] {
+        background: rgba(3, 7, 18, 0.8);
+        border: 1px solid var(--border);
+        padding: 10px;
+        border-radius: 12px;
+        color: var(--muted);
+        flex: 1;
+      }
+
+      .media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 18px;
+      }
+
+      .media-card {
+        background: var(--panel-strong, rgba(6, 10, 25, 0.9));
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .media-card img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        background: #0f172a;
+      }
+
+      .media-card .meta {
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .media-card .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .status {
+        min-height: 24px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div class="title-group">
+            <h1>Media library</h1>
+            <p id="mediaCount">Loading…</p>
+          </div>
+          <div class="actions">
+            <button id="articlesBtn" class="btn secondary" type="button">Articles</button>
+            <button id="logoutBtn" class="btn secondary" type="button">Log out</button>
+          </div>
+        </header>
+
+        <main class="admin-main">
+          <section class="upload-panel">
+            <form id="uploadForm">
+              <input id="fileInput" type="file" accept="image/*" required />
+              <button class="btn primary" type="submit">Upload</button>
+            </form>
+            <div id="uploadStatus" class="status"></div>
+          </section>
+
+          <section>
+            <div class="media-grid" id="mediaGrid">
+              <div class="status">Loading media…</div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const mediaGrid = document.getElementById("mediaGrid");
+      const mediaCount = document.getElementById("mediaCount");
+      const uploadStatus = document.getElementById("uploadStatus");
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          credentials: "include",
+          ...options,
+        });
+
+        if (response.status === 401) {
+          window.location.href = "/admin/";
+          return null;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          return response.json();
+        }
+        return response.text();
+      }
+
+      async function loadMedia() {
+        const payload = await fetchJSON("/api/media");
+        const media = payload?.media || [];
+        mediaCount.textContent = `${media.length} item${media.length === 1 ? "" : "s"}`;
+        mediaGrid.innerHTML = "";
+
+        if (!media.length) {
+          mediaGrid.innerHTML = '<div class="status">No media yet.</div>';
+          return;
+        }
+
+        media.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "media-card";
+          card.innerHTML = `
+            <img src="${item.webp || item.path}" alt="${item.name}" loading="lazy" />
+            <div class="meta">
+              <strong>${item.name}</strong>
+              <small>${item.width || "?"}×${item.height || "?"} • ${item.mime || ""}</small>
+              <div class="actions">
+                <button class="btn secondary" data-copy="${item.path}">Copy URL</button>
+                ${
+                  item.webp
+                    ? `<button class="btn secondary" data-copy="${item.webp}">Copy WebP</button>`
+                    : ""
+                }
+                <button class="btn secondary" data-insert="${item.path}">Insert</button>
+                <button class="btn secondary" data-delete="${item.id}">Delete</button>
+              </div>
+            </div>
+          `;
+          mediaGrid.appendChild(card);
+        });
+      }
+
+      mediaGrid.addEventListener("click", async (event) => {
+        const copy = event.target.getAttribute("data-copy");
+        if (copy) {
+          await navigator.clipboard.writeText(copy);
+          uploadStatus.textContent = "Copied URL to clipboard";
+          return;
+        }
+        const insert = event.target.getAttribute("data-insert");
+        if (insert) {
+          await navigator.clipboard.writeText(`![alt text](${insert})`);
+          uploadStatus.textContent = "Markdown snippet copied";
+          return;
+        }
+        const deleteId = event.target.getAttribute("data-delete");
+        if (deleteId) {
+          if (!confirm("Delete this media item?")) return;
+          await fetchJSON(`/api/media/${deleteId}`, { method: "DELETE" });
+          uploadStatus.textContent = "Media deleted";
+          await loadMedia();
+        }
+      });
+
+      document.getElementById("uploadForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+        const file = document.getElementById("fileInput").files[0];
+        if (!file) {
+          uploadStatus.textContent = "Select a file first.";
+          return;
+        }
+        formData.append("file", file);
+        try {
+          uploadStatus.textContent = "Uploading…";
+          await fetchJSON("/api/media", {
+            method: "POST",
+            body: formData,
+          });
+          document.getElementById("fileInput").value = "";
+          uploadStatus.textContent = "Upload complete.";
+          await loadMedia();
+        } catch (error) {
+          uploadStatus.textContent = error.message;
+        }
+      });
+
+      document.getElementById("articlesBtn").addEventListener("click", () => {
+        window.location.href = "/admin/articles.html";
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      (async function init() {
+        await loadMedia();
+        const currentPath = window.location.pathname;
+        document.querySelectorAll(".admin-nav a").forEach((link) => {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            link.classList.add("active");
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

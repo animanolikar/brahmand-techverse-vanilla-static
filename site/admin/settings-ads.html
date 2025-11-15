@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <title>Ads & Consent Settings • Brahmand Admin</title>
+    <style>
+      .settings-section {
+        background: var(--panel-strong, rgba(6, 10, 25, 0.9));
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+      .settings-section form {
+        display: grid;
+        gap: 16px;
+      }
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      input,
+      textarea {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        background: rgba(3, 6, 17, 0.7);
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div>
+            <h1>Ads & Consent</h1>
+            <p>Configure AdSense publisher ID, slot toggles, and consent banner messaging.</p>
+          </div>
+          <button id="logoutBtn" class="btn secondary" type="button">Log out</button>
+        </header>
+
+        <main class="admin-main">
+          <section class="settings-section">
+            <h2>AdSense</h2>
+            <form id="adsForm">
+              <label>
+                Publisher ID
+                <input name="pub_id" placeholder="pub-xxxxxxxxxxxxxxxx" />
+              </label>
+              <label>
+                Leaderboard slot ID
+                <input name="leaderboard_slot" placeholder="1234567890" />
+              </label>
+              <label>
+                Sidebar slot ID
+                <input name="sidebar_slot" placeholder="0987654321" />
+              </label>
+              <label>
+                In-article slot ID
+                <input name="inarticle_slot" placeholder="1234509876" />
+              </label>
+              <label>
+                Sticky sidebar enabled
+                <select name="sticky_sidebar">
+                  <option value="true">Enabled</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </label>
+              <button class="btn primary" type="submit">Save AdSense settings</button>
+              <div id="adsStatus" class="status-bar"></div>
+            </form>
+          </section>
+
+          <section class="settings-section">
+            <h2>Consent banner</h2>
+            <form id="consentForm">
+              <label>
+                Banner message
+                <textarea name="message" rows="3"></textarea>
+              </label>
+              <label>
+                Accept button text
+                <input name="accept_text" placeholder="Accept" />
+              </label>
+              <label>
+                Decline button text
+                <input name="decline_text" placeholder="Decline" />
+              </label>
+              <label>
+                Consent storage key
+                <input name="storage_key" placeholder="brahmand-consent" />
+              </label>
+              <button class="btn primary" type="submit">Save consent settings</button>
+              <div id="consentStatus" class="status-bar"></div>
+            </form>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const adsForm = document.getElementById("adsForm");
+      const consentForm = document.getElementById("consentForm");
+      const adsStatus = document.getElementById("adsStatus");
+      const consentStatus = document.getElementById("consentStatus");
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          ...options,
+        });
+        if (response.status === 401) {
+          window.location.href = "/admin/";
+          return null;
+        }
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+        return response.json();
+      }
+
+      async function loadSettings() {
+        const ads = await fetchJSON("/api/settings?key=adsense");
+        const consent = await fetchJSON("/api/settings?key=consent");
+
+        if (ads?.value) {
+          Object.entries(ads.value).forEach(([key, value]) => {
+            if (adsForm.elements[key]) {
+              adsForm.elements[key].value = value;
+            }
+          });
+        }
+
+        if (consent?.value) {
+          Object.entries(consent.value).forEach(([key, value]) => {
+            if (consentForm.elements[key]) {
+              consentForm.elements[key].value = value;
+            }
+          });
+        }
+      }
+
+      adsForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(adsForm);
+        const payload = Object.fromEntries(formData.entries());
+        await fetchJSON("/api/settings", {
+          method: "POST",
+          body: JSON.stringify({ key: "adsense", value: payload }),
+        });
+        adsStatus.textContent = "Saved AdSense settings.";
+      });
+
+      consentForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(consentForm);
+        const payload = Object.fromEntries(formData.entries());
+        await fetchJSON("/api/settings", {
+          method: "POST",
+          body: JSON.stringify({ key: "consent", value: payload }),
+        });
+        consentStatus.textContent = "Saved consent banner settings.";
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      (async function init() {
+        await loadSettings();
+        const currentPath = window.location.pathname;
+        document.querySelectorAll(".admin-nav a").forEach((link) => {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            link.classList.add("active");
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

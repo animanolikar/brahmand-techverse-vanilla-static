@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <title>Menus • Brahmand Admin</title>
+    <style>
+      .section {
+        background: var(--panel-strong, rgba(6, 10, 25, 0.9));
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px 8px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(3, 6, 17, 0.7);
+        color: var(--text);
+      }
+      .actions {
+        display: flex;
+        gap: 6px;
+      }
+      form.inline {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="#">Settings</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div>
+            <h1>Navigation menus</h1>
+            <p>Manage header navigation and mega-menu sections.</p>
+          </div>
+          <button id="logoutBtn" class="btn secondary" type="button">Log out</button>
+        </header>
+
+        <main class="admin-main">
+          <section class="section">
+            <h2>Header navigation</h2>
+            <form class="inline" id="headerForm">
+              <input name="label" placeholder="Label (e.g., Home)" required />
+              <input name="url" placeholder="/path/" required />
+              <input type="number" name="order_index" placeholder="Order" value="0" required />
+              <button class="btn primary" type="submit">Add item</button>
+            </form>
+            <table>
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>URL</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="headerTable">
+                <tr><td colspan="4">Loading…</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="section">
+            <h2>Mega menu</h2>
+            <form class="inline" id="megaForm">
+              <input name="label" placeholder="Link label" required />
+              <input name="url" placeholder="/techverse/ai-tools.html" required />
+              <select name="verse_id" required></select>
+              <input type="number" name="order_index" placeholder="Order" value="0" required />
+              <button class="btn primary" type="submit">Add link</button>
+            </form>
+            <table>
+              <thead>
+                <tr>
+                  <th>Verse</th>
+                  <th>Label</th>
+                  <th>URL</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="megaTable">
+                <tr><td colspan="5">Loading…</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const headerTable = document.getElementById("headerTable");
+      const megaTable = document.getElementById("megaTable");
+      const headerForm = document.getElementById("headerForm");
+      const megaForm = document.getElementById("megaForm");
+      const verseSelect = megaForm.querySelector('select[name="verse_id"]');
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          ...options,
+        });
+        if (response.status === 401) {
+          window.location.href = "/admin/";
+          return null;
+        }
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+        return response.json();
+      }
+
+      function renderTable(tableEl, menus, area) {
+        tableEl.innerHTML = "";
+        if (!menus.length) {
+          tableEl.innerHTML = `<tr><td colspan="${area === "header" ? 4 : 5}">No items.</td></tr>`;
+          return;
+        }
+
+        menus.forEach((item) => {
+          const row = document.createElement("tr");
+          if (area === "header") {
+            row.innerHTML = `
+              <td><input value="${item.label}" data-label /></td>
+              <td><input value="${item.url}" data-url /></td>
+              <td><input type="number" value="${item.order_index}" data-order /></td>
+              <td class="actions">
+                <button class="btn secondary" data-save="${item.id}">Save</button>
+                <button class="btn secondary" data-delete="${item.id}">Delete</button>
+              </td>
+            `;
+          } else {
+            row.innerHTML = `
+              <td>
+                <select data-verse>
+                  ${Array.from(verseSelect.options)
+                    .map(
+                      (opt) =>
+                        `<option value="${opt.value}" ${
+                          opt.value === String(item.verse_id || "") ? "selected" : ""
+                        }>${opt.textContent}</option>`,
+                    )
+                    .join("")}
+                </select>
+              </td>
+              <td><input value="${item.label}" data-label /></td>
+              <td><input value="${item.url}" data-url /></td>
+              <td><input type="number" value="${item.order_index}" data-order /></td>
+              <td class="actions">
+                <button class="btn secondary" data-save="${item.id}">Save</button>
+                <button class="btn secondary" data-delete="${item.id}">Delete</button>
+              </td>
+            `;
+          }
+          row.dataset.id = item.id;
+          tableEl.appendChild(row);
+        });
+      }
+
+      headerTable.addEventListener("click", handleTableClick.bind(null, "header"));
+      megaTable.addEventListener("click", handleTableClick.bind(null, "mega"));
+
+      async function handleTableClick(area, event) {
+        const saveId = event.target.getAttribute("data-save");
+        const deleteId = event.target.getAttribute("data-delete");
+        if (saveId) {
+          await saveMenuRow(area, saveId, event.target.closest("tr"));
+        } else if (deleteId) {
+          if (confirm("Delete menu item?")) {
+            await fetchJSON(`/api/menus/${deleteId}`, { method: "DELETE" });
+            await loadMenus();
+          }
+        }
+      }
+
+      async function saveMenuRow(area, id, row) {
+        const payload = {
+          label: row.querySelector("[data-label]").value,
+          url: row.querySelector("[data-url]").value,
+          order_index: Number(row.querySelector("[data-order]").value || 0),
+        };
+        if (area === "mega") {
+          payload.verse_id = row.querySelector("[data-verse]").value || null;
+        }
+        await fetchJSON(`/api/menus/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+      }
+
+      headerForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(headerForm);
+        const payload = {
+          area: "header",
+          label: formData.get("label"),
+          url: formData.get("url"),
+          order_index: Number(formData.get("order_index") || 0),
+        };
+        await fetchJSON("/api/menus", { method: "POST", body: JSON.stringify(payload) });
+        headerForm.reset();
+        await loadMenus();
+      });
+
+      megaForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(megaForm);
+        const payload = {
+          area: "mega",
+          label: formData.get("label"),
+          url: formData.get("url"),
+          verse_id: formData.get("verse_id"),
+          order_index: Number(formData.get("order_index") || 0),
+        };
+        await fetchJSON("/api/menus", { method: "POST", body: JSON.stringify(payload) });
+        megaForm.reset();
+        await loadMenus();
+      });
+
+      async function loadMenus() {
+        const [headerRes, megaRes] = await Promise.all([
+          fetchJSON("/api/menus?area=header"),
+          fetchJSON("/api/menus?area=mega"),
+        ]);
+        renderTable(headerTable, headerRes?.menus || [], "header");
+        renderTable(megaTable, megaRes?.menus || [], "mega");
+      }
+
+      async function loadVerses() {
+        const payload = await fetchJSON("/api/verses");
+        verseSelect.innerHTML = '<option value="">Select verse</option>';
+        (payload?.verses || []).forEach((verse) => {
+          const option = document.createElement("option");
+          option.value = verse.id || verse.code;
+          option.textContent = verse.title;
+          verseSelect.appendChild(option);
+        });
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      (async function init() {
+        await loadVerses();
+        await loadMenus();
+        const currentPath = window.location.pathname;
+        document.querySelectorAll(".admin-nav a").forEach((link) => {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            link.classList.add("active");
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <title>Editorial Calendar • Brahmand</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #020617;
+        --panel: rgba(15, 23, 42, 0.85);
+        --border: rgba(148, 163, 184, 0.2);
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --draft: #64748b;
+        --review: #facc15;
+        --scheduled: #38bdf8;
+        --published: #4ade80;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Inter", system-ui, sans-serif;
+        background: radial-gradient(circle at top, #0f172a, #020617 70%);
+        color: var(--text);
+      }
+
+      header {
+        padding: 20px 32px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(12px);
+      }
+
+      header a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      #calendar {
+        max-width: 1200px;
+        margin: 24px auto;
+        background: var(--panel);
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        padding: 20px;
+      }
+
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        color: var(--muted);
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .legend b {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        display: inline-block;
+      }
+
+      .status-message {
+        text-align: center;
+        margin-top: 12px;
+        min-height: 24px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div>
+            <a href="/admin/dashboard.html">← Back to dashboard</a>
+            <h1 style="margin: 6px 0 0">Editorial Calendar</h1>
+          </div>
+          <div>
+            <button id="newArticleBtn" class="btn secondary" type="button">New article</button>
+            <button id="logoutBtn" class="btn secondary" type="button">Log out</button>
+          </div>
+        </header>
+
+        <div class="admin-main">
+          <div id="calendar"></div>
+          <div class="legend">
+            <span><b style="background: var(--draft)"></b>Draft</span>
+            <span><b style="background: var(--review)"></b>Review</span>
+            <span><b style="background: var(--scheduled)"></b>Scheduled</span>
+            <span><b style="background: var(--published)"></b>Published</span>
+          </div>
+          <div id="statusMessage" class="status-message"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function getStatusColor(status) {
+        switch (status) {
+          case "draft":
+            return "#64748b";
+          case "review":
+            return "#facc15";
+          case "scheduled":
+            return "#38bdf8";
+          case "published":
+            return "#4ade80";
+          default:
+            return "#94a3b8";
+        }
+      }
+
+      async function fetchEvents(info, successCallback, failureCallback) {
+        try {
+          const params = new URLSearchParams({
+            start: info.startStr,
+            end: info.endStr,
+          });
+          const response = await fetch(`/api/calendar/events?${params.toString()}`, {
+            credentials: "include",
+          });
+          if (response.status === 401) {
+            window.location.href = "/admin/";
+            return;
+          }
+          const payload = await response.json();
+          const events = (payload.events || []).map((event) => ({
+            id: event.id,
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            backgroundColor: getStatusColor(event.status),
+            borderColor: getStatusColor(event.status),
+            extendedProps: {
+              verse: event.verse,
+              status: event.status,
+            },
+          }));
+          successCallback(events);
+        } catch (error) {
+          failureCallback(error);
+          setStatus(error.message, "error");
+        }
+      }
+
+      async function updateEvent(event) {
+        const body = {
+          publish_at: event.start.toISOString(),
+          status: event.extendedProps.status === "published" ? "published" : "scheduled",
+        };
+        const response = await fetch(`/api/calendar/events/${event.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(body),
+        });
+        if (!response.ok) {
+          throw new Error((await response.json()).message || "Failed to update event");
+        }
+        setStatus("Updated schedule", "success");
+      }
+
+      function setStatus(msg, variant = "") {
+        const el = document.getElementById("statusMessage");
+        el.textContent = msg;
+        el.style.color = variant === "error" ? "#f87171" : "#94a3b8";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const calendarEl = document.getElementById("calendar");
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+          height: "auto",
+          selectable: true,
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          },
+          events: fetchEvents,
+          eventClick(info) {
+            window.location.href = `/admin/editor.html?id=${info.event.id}`;
+          },
+          editable: true,
+          eventDrop: async (info) => {
+            try {
+              await updateEvent(info.event);
+            } catch (error) {
+              info.revert();
+              setStatus(error.message, "error");
+            }
+          },
+        });
+        calendar.render();
+
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+          await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+          window.location.href = "/admin/";
+        });
+
+        document.getElementById("newArticleBtn").addEventListener("click", () => {
+          window.location.href = "/admin/editor.html";
+        });
+
+        const currentPath = window.location.pathname;
+        document.querySelectorAll(".admin-nav a").forEach((link) => {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            link.classList.add("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

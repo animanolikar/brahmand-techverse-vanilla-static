@@ -2,10 +2,14 @@
 
 const fs = require("fs");
 const path = require("path");
-const { remark } = require("remark");
-const remarkHtml = require("remark-html");
-const remarkGfm = require("remark-gfm");
+async function getRemarkProcessor() {
+  const remarkPkg = await import("remark");
+  const remarkHtml = (await import("remark-html")).default;
+  const remarkGfm = (await import("remark-gfm")).default;
+  return remarkPkg.remark().use(remarkGfm).use(remarkHtml, { sanitize: false });
+}
 const { pool } = require("../config/db");
+const { exportMenusJson } = require("./menuService");
 
 const SITE_ROOT = path.join(process.cwd(), "site");
 const CONTENT_ROOT = path.join(process.cwd(), "content");
@@ -34,8 +38,13 @@ async function fetchPublishedArticles() {
   return rows;
 }
 
+let remarkProcessorPromise;
+
 async function renderMarkdown(markdown) {
-  const processor = remark().use(remarkGfm).use(remarkHtml, { sanitize: false });
+  if (!remarkProcessorPromise) {
+    remarkProcessorPromise = getRemarkProcessor();
+  }
+  const processor = await remarkProcessorPromise;
   const file = await processor.process(markdown || "");
   return String(file);
 }
@@ -138,6 +147,7 @@ async function buildSite(siteUrl = process.env.SITE_URL || "http://localhost:300
 
   await updateSearchIndex(searchEntries);
   await updateSitemap(searchEntries, normalizedSiteUrl);
+  await exportMenusJson();
 
   return {
     count: searchEntries.length,
@@ -148,4 +158,3 @@ async function buildSite(siteUrl = process.env.SITE_URL || "http://localhost:300
 module.exports = {
   buildSite,
 };
-

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
+<url><loc>http://localhost:3000/techverse/aaa-1.html</loc><lastmod>2025-11-15T08:51:00.000Z</lastmod></url>
+<url><loc>http://localhost:3000/techverse/aaa.html</loc><lastmod>2025-11-15T08:51:00.000Z</lastmod></url>
+<url><loc>http://localhost:3000/techverse/aaa-2.html</loc><lastmod>2025-11-15T03:21:00.000Z</lastmod></url>
+<url><loc>http://localhost:3000/techverse/ss.html</loc><lastmod>2025-11-14T09:28:54.000Z</lastmod></url>
+<url><loc>http://localhost:3000/healthverse/metabolic-mornings.html</loc><lastmod>2024-11-20T07:00:00.000Z</lastmod></url>
+<url><loc>http://localhost:3000/techverse/ai-tool-stack.html</loc><lastmod>2024-11-08T10:00:00.000Z</lastmod></url>
+<url><loc>http://localhost:3000/finverse/cash-flow-ladder.html</loc><lastmod>2024-11-06T09:00:00.000Z</lastmod></url>
 </urlset>

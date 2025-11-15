@@ -9,7 +9,8 @@
     "build:meta": "node scripts/generate-meta.js",
     "build:og": "node scripts/generate-og-images.js",
     "create:admin": "node scripts/create-admin-user.js",
-    "build:site": "node scripts/build-site.js"
+    "build:site": "node scripts/build-site.js",
+    "run:scheduler": "node scripts/run-scheduler.js"
   },
   "keywords": [
     "brahmand",
@@ -29,6 +30,7 @@
     "helmet": "^8.1.0",
     "html-minifier": "^4.0.0",
     "jsdom": "^26.1.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.15.3",
     "node-fetch": "^3.3.2",
     "puppeteer": "^24.29.1",
@@ -37,6 +39,7 @@
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
+    "sharp": "^0.34.5",
     "unified": "^11.0.5"
   },
   "devDependencies": {

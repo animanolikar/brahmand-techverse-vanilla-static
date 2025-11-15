@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Loan EMI Calculator – Brahmand Tools</title>
+  <meta name="description" content="Plan loans with a fast EMI calculator that breaks down principal vs interest.">
+  <meta property="og:title" content="Loan EMI Calculator – Brahmand Tools">
+  <meta property="og:description" content="Plan loans with a fast EMI calculator that breaks down principal vs interest.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://brahmand.co/tools/loan-emi-calculator.html">
+  <meta property="og:image" content="https://brahmand.co/assets/og/tools-loan-emi.png">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 16px 3rem;
+    }
+    .tool-hero{
+      background: linear-gradient(135deg,#0f172a,#0b1120);
+      color:#fff;
+      padding:3rem 1.5rem;
+      text-align:center;
+    }
+    .tool-hero h1{margin:0;font-size:2rem;}
+    .tool-hero p{max-width:520px;margin:1rem auto 0;color:#cbd5f5;}
+    .calculator{
+      max-width:960px;margin:0px auto 60px;padding:32px;border-radius:24px;
+      background:#fff;box-shadow:0 30px 80px rgba(15,23,42,.25);display:grid;gap:24px;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    }
+    .calculator label{
+      display:flex;flex-direction:column;gap:8px;font-weight:600;color:#0f172a;
+    }
+    .calculator input{
+      padding:10px 12px;border-radius:12px;border:1px solid #dbe2f1;font-size:1rem;
+    }
+    .calculator button{
+      padding:14px;border-radius:14px;border:none;background:#0ea5e9;color:#fff;font-weight:600;
+      cursor:pointer;margin-top:12px;
+    }
+    .results{
+      background:#0f172a;color:#fff;padding:24px;border-radius:20px;
+      display:flex;flex-direction:column;gap:12px;
+    }
+    .result-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;
+    }
+    .result-card{
+      padding:14px;border-radius:16px;background:rgba(255,255,255,.08);
+    }
+    @media (max-width:640px){
+      .calculator{grid-template-columns:1fr;margin: -60px 16px 48px;}
+    }
+  </style>
+</head>
+<body>
+<!-- SITE-NAV-START -->
+  <header>
+    <div class="navbar" role="navigation" aria-label="Primary">
+      <a class="logo" href="/">BRAHMAND</a>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/techverse/">Techverse</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><a href="/search/">Search</a></li>
+          <li><button class="button-secondary" data-mega-toggle aria-expanded="false" aria-haspopup="true" aria-controls="mega-menu">Explore</button></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button class="button-secondary theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">☾</button>
+        <a class="btn-primary" href="/tools/">Launch Tools</a>
+      </div>
+    </div>
+    <div class="mega-menu" id="mega-menu" data-mega-menu role="menu" aria-label="Explore Brahmand verses" aria-hidden="true">
+      <div class="mega-grid">
+        <div class="mega-column">
+          <h4>Techverse</h4>
+          <ul>
+            <li><a href="/techverse/ai-tools.html">AI tool stack 2025</a></li>
+            <li><a href="/techverse/canva-vs-figma.html">Canva vs Figma</a></li>
+            <li><a href="/techverse/notion-templates.html">Notion template vault</a></li>
+            <li><a href="/techverse/chrome-extensions.html">Chrome extensions kit</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Finverse</h4>
+          <ul>
+            <li><a href="/finverse/beginners-budgeting.html">Beginner budgeting</a></li>
+            <li><a href="/finverse/sip-vs-rd-vs-fd.html">SIP vs RD vs FD</a></li>
+            <li><a href="/finverse/cash-flow-ladder.html">Cash-flow ladder</a></li>
+            <li><a href="/finverse/side-hustle-sprint.html">Side-hustle sprint</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Healthverse</h4>
+          <ul>
+            <li><a href="/healthverse/7-day-sleep-reset.html">7-day sleep reset</a></li>
+            <li><a href="/healthverse/metabolic-mornings.html">Metabolic mornings</a></li>
+            <li><a href="/healthverse/desk-detox.html">Desk detox routine</a></li>
+            <li><a href="/healthverse/longevity-sprint.html">Longevity sprint</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Skillverse</h4>
+          <ul>
+            <li><a href="/skillverse/one-page-resume.html">One-page resume</a></li>
+            <li><a href="/skillverse/freelancer-pricing.html">Pricing ladder</a></li>
+            <li><a href="/skillverse/microlearning-systems.html">Microlearning systems</a></li>
+            <li><a href="/skillverse/mentor-os.html">Mentor OS</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/tools/focus-timer.html">Focus Timer</a></li>
+            <li><a href="/tools/text-cleaner.html">Text Cleaner</a></li>
+            <li><a href="/tools/image-resizer.html">Image Resizer</a></li>
+            <li><a href="/tools/loan-emi-calculator.html">Loan EMI Calculator</a></li>
+            <li><a href="/tools/adsense-revenue-calculator.html">AdSense Revenue Calculator</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+<!-- SITE-NAV-END -->
+
+  <section class="tool-hero">
+    <h1>Loan EMI Calculator</h1>
+    <p>Instant EMI, total interest, and payoff timeline for mortgages, auto loans, or startup equipment financing.</p>
+  </section>
+
+  <section class="calculator">
+    <div>
+      <label>
+        Loan amount (₹)
+        <input type="number" id="loanAmount" placeholder="1000000" min="1" step="1000" required />
+      </label>
+      <label>
+        Annual interest rate (%)
+        <input type="number" id="interestRate" placeholder="8.5" min="0" step="0.1" required />
+      </label>
+      <label>
+        Tenure (months)
+        <input type="number" id="tenureMonths" placeholder="120" min="1" step="1" required />
+      </label>
+      <button id="calculateBtn" type="button">Calculate EMI</button>
+    </div>
+    <div class="results">
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="muted-label">EMI / month</div>
+          <div id="emiValue" class="result-value">₹0</div>
+        </div>
+        <div class="result-card">
+          <div class="muted-label">Total payable</div>
+          <div id="totalValue">₹0</div>
+        </div>
+        <div class="result-card">
+          <div class="muted-label">Total interest</div>
+          <div id="interestValue">₹0</div>
+        </div>
+      </div>
+      <p id="summary">Enter loan details above to preview repayment schedule.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <p class="logo">BRAHMAND</p>
+        <p>The modular knowledge engine for makers.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about.html">About</a><br>
+        <a href="/privacy.html">Privacy</a><br>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div>
+        <h4>Verses</h4>
+        <a href="/techverse/">Techverse</a><br>
+        <a href="/finverse/">Finverse</a><br>
+        <a href="/healthverse/">Healthverse</a><br>
+        <a href="/skillverse/">Skillverse</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href="/tools/">Automation</a><br>
+        <a href="/tools/focus-timer.html">Focus Timer</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="banner-consent" data-consent-banner>
+    <p>We use cookies + local storage to personalize content and measure experiments. Do you accept?</p>
+    <div class="banner-actions">
+      <button class="btn-primary" data-consent-action="accepted">Accept</button>
+      <button class="button-secondary" data-consent-action="declined">Decline</button>
+    </div>
+  </div>
+
+  <script>
+    const loanAmountEl = document.getElementById("loanAmount");
+    const interestRateEl = document.getElementById("interestRate");
+    const tenureEl = document.getElementById("tenureMonths");
+    const emiValueEl = document.getElementById("emiValue");
+    const totalValueEl = document.getElementById("totalValue");
+    const interestValueEl = document.getElementById("interestValue");
+    const summaryEl = document.getElementById("summary");
+
+    document.getElementById("calculateBtn").addEventListener("click", () => {
+      const principal = parseFloat(loanAmountEl.value);
+      const annualRate = parseFloat(interestRateEl.value);
+      const months = parseInt(tenureEl.value, 10);
+
+      if (!principal || !annualRate || !months) {
+        summaryEl.textContent = "Enter valid loan amount, rate, and tenure.";
+        return;
+      }
+
+      const monthlyRate = annualRate / 12 / 100;
+      let emi;
+      if (monthlyRate === 0) {
+        emi = principal / months;
+      } else {
+        const factor = Math.pow(1 + monthlyRate, months);
+        emi = (principal * monthlyRate * factor) / (factor - 1);
+      }
+      const totalPayable = emi * months;
+      const totalInterest = totalPayable - principal;
+
+      emiValueEl.textContent = `₹${emi.toFixed(2)}`;
+      totalValueEl.textContent = `₹${totalPayable.toFixed(2)}`;
+      interestValueEl.textContent = `₹${totalInterest.toFixed(2)}`;
+      summaryEl.textContent = `Repayment spans ${months} months. Interest forms ${(totalInterest / totalPayable * 100).toFixed(1)}% of the total outflow.`;
+    });
+  </script>
+  <script src="/assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AdSense Revenue Calculator – Brahmand Tools</title>
+  <meta name="description" content="Project AdSense earnings instantly using RPM, CTR, and CPC inputs.">
+  <meta property="og:title" content="AdSense Revenue Calculator – Brahmand Tools">
+  <meta property="og:description" content="Project AdSense earnings instantly using RPM, CTR, and CPC inputs.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://brahmand.co/tools/adsense-revenue-calculator.html">
+  <meta property="og:image" content="https://brahmand.co/assets/og/tools-adsense.png">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 16px 3rem;
+    }
+    .tool-hero{background:linear-gradient(135deg,#0f172a,#111c34);color:#fff;padding:3rem 1.5rem;text-align:center;}
+    .tool-hero h1{margin:0;font-size:2rem;}
+    .tool-hero p{margin:1rem auto 0;max-width:560px;color:#cbd5f5;}
+    .calc-shell{max-width:960px;margin:0px auto 60px;padding:32px;border-radius:24px;background:#fff;box-shadow:0 30px 80px rgba(15,23,42,.2);}
+    .calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+    .calc-grid label{display:flex;flex-direction:column;gap:8px;font-weight:600;color:#0f172a;}
+    .calc-grid input{padding:10px;border-radius:12px;border:1px solid #dbe2f1;font-size:1rem;}
+    .calc-grid select{padding:10px;border-radius:12px;border:1px solid #dbe2f1;font-size:1rem;}
+    .calc-shell button{margin-top:20px;padding:14px 18px;border:none;border-radius:14px;background:#22c55e;color:#fff;font-weight:600;cursor:pointer;}
+    .result-panel{margin-top:24px;background:#0f172a;color:#fff;padding:24px;border-radius:20px;display:grid;gap:16px;}
+    .result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+    .result-card{padding:16px;border-radius:18px;background:rgba(255,255,255,.08);}
+    .muted{color:#cbd5f5;font-size:0.85rem;}
+  </style>
+</head>
+<body>
+<!-- SITE-NAV-START -->
+  <header>
+    <div class="navbar" role="navigation" aria-label="Primary">
+      <a class="logo" href="/">BRAHMAND</a>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/techverse/">Techverse</a></li>
+          <li><a href="/tools/">Tools</a></li>
+          <li><a href="/search/">Search</a></li>
+          <li><button class="button-secondary" data-mega-toggle aria-expanded="false" aria-haspopup="true" aria-controls="mega-menu">Explore</button></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button class="button-secondary theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">☾</button>
+        <a class="btn-primary" href="/tools/">Launch Tools</a>
+      </div>
+    </div>
+    <div class="mega-menu" id="mega-menu" data-mega-menu role="menu" aria-label="Explore Brahmand verses" aria-hidden="true">
+      <div class="mega-grid">
+        <div class="mega-column">
+          <h4>Techverse</h4>
+          <ul>
+            <li><a href="/techverse/ai-tools.html">AI tool stack 2025</a></li>
+            <li><a href="/techverse/canva-vs-figma.html">Canva vs Figma</a></li>
+            <li><a href="/techverse/notion-templates.html">Notion template vault</a></li>
+            <li><a href="/techverse/chrome-extensions.html">Chrome extensions kit</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Finverse</h4>
+          <ul>
+            <li><a href="/finverse/beginners-budgeting.html">Beginner budgeting</a></li>
+            <li><a href="/finverse/sip-vs-rd-vs-fd.html">SIP vs RD vs FD</a></li>
+            <li><a href="/finverse/cash-flow-ladder.html">Cash-flow ladder</a></li>
+            <li><a href="/finverse/side-hustle-sprint.html">Side-hustle sprint</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Healthverse</h4>
+          <ul>
+            <li><a href="/healthverse/7-day-sleep-reset.html">7-day sleep reset</a></li>
+            <li><a href="/healthverse/metabolic-mornings.html">Metabolic mornings</a></li>
+            <li><a href="/healthverse/desk-detox.html">Desk detox routine</a></li>
+            <li><a href="/healthverse/longevity-sprint.html">Longevity sprint</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Skillverse</h4>
+          <ul>
+            <li><a href="/skillverse/one-page-resume.html">One-page resume</a></li>
+            <li><a href="/skillverse/freelancer-pricing.html">Pricing ladder</a></li>
+            <li><a href="/skillverse/microlearning-systems.html">Microlearning systems</a></li>
+            <li><a href="/skillverse/mentor-os.html">Mentor OS</a></li>
+          </ul>
+        </div>
+        <div class="mega-column">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/tools/focus-timer.html">Focus Timer</a></li>
+            <li><a href="/tools/text-cleaner.html">Text Cleaner</a></li>
+            <li><a href="/tools/image-resizer.html">Image Resizer</a></li>
+            <li><a href="/tools/loan-emi-calculator.html">Loan EMI Calculator</a></li>
+            <li><a href="/tools/adsense-revenue-calculator.html">AdSense Revenue Calculator</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+<!-- SITE-NAV-END -->
+
+  <section class="tool-hero">
+    <h1>AdSense Revenue Calculator</h1>
+    <p>Forecast earnings using RPM, CTR, and CPC before planning sponsorships or scaling traffic campaigns.</p>
+  </section>
+
+  <section class="calc-shell">
+    <div class="calc-grid">
+      <label>
+        Monthly page views
+        <input type="number" id="pageviews" placeholder="500000" min="0" step="1000" />
+      </label>
+      <label>
+        Viewable impressions (%)
+        <input type="number" id="viewability" placeholder="70" min="0" max="100" step="1" />
+      </label>
+      <label>
+        CTR (%)
+        <input type="number" id="ctr" placeholder="1.2" min="0" step="0.1" />
+      </label>
+      <label>
+        CPC (₹)
+        <input type="number" id="cpc" placeholder="12" min="0" step="0.1" />
+      </label>
+    </div>
+    <button id="calcRevenue" type="button">Estimate revenue</button>
+    <div class="result-panel">
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="muted">Estimated clicks</div>
+          <div id="clicksResult">0</div>
+        </div>
+        <div class="result-card">
+          <div class="muted">Est. revenue</div>
+          <div id="revenueResult">₹0</div>
+        </div>
+        <div class="result-card">
+          <div class="muted">Effective RPM</div>
+          <div id="rpmResult">₹0</div>
+        </div>
+      </div>
+      <p id="revenueSummary">Input traffic metrics to project revenue.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <p class="logo">BRAHMAND</p>
+        <p>The modular knowledge engine for makers.</p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="/about.html">About</a><br>
+        <a href="/privacy.html">Privacy</a><br>
+        <a href="/terms.html">Terms</a>
+      </div>
+      <div>
+        <h4>Verses</h4>
+        <a href="/techverse/">Techverse</a><br>
+        <a href="/finverse/">Finverse</a><br>
+        <a href="/healthverse/">Healthverse</a><br>
+        <a href="/skillverse/">Skillverse</a>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <a href="/tools/">Automation</a><br>
+        <a href="/tools/focus-timer.html">Focus Timer</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="banner-consent" data-consent-banner>
+    <p>We use cookies + local storage to personalize content and measure experiments. Do you accept?</p>
+    <div class="banner-actions">
+      <button class="btn-primary" data-consent-action="accepted">Accept</button>
+      <button class="button-secondary" data-consent-action="declined">Decline</button>
+    </div>
+  </div>
+
+  <script>
+    const pageviewsEl = document.getElementById("pageviews");
+    const viewabilityEl = document.getElementById("viewability");
+    const ctrEl = document.getElementById("ctr");
+    const cpcEl = document.getElementById("cpc");
+    const clicksResultEl = document.getElementById("clicksResult");
+    const revenueResultEl = document.getElementById("revenueResult");
+    const rpmResultEl = document.getElementById("rpmResult");
+    const summaryEl = document.getElementById("revenueSummary");
+
+    document.getElementById("calcRevenue").addEventListener("click", () => {
+      const pageviews = parseFloat(pageviewsEl.value) || 0;
+      const viewability = (parseFloat(viewabilityEl.value) || 0) / 100;
+      const ctr = (parseFloat(ctrEl.value) || 0) / 100;
+      const cpc = parseFloat(cpcEl.value) || 0;
+
+      if (!pageviews || !cpc) {
+        summaryEl.textContent = "Enter valid traffic and CPC data.";
+        return;
+      }
+
+      const impressions = pageviews * viewability;
+      const clicks = impressions * ctr;
+      const revenue = clicks * cpc;
+      const rpm = revenue / (pageviews / 1000 || 1);
+
+      clicksResultEl.textContent = clicks.toFixed(0);
+      revenueResultEl.textContent = `₹${revenue.toFixed(2)}`;
+      rpmResultEl.textContent = `₹${rpm.toFixed(2)}`;
+      summaryEl.textContent = `At ${ctrEl.value || 0}% CTR and ₹${cpc.toFixed(2)} CPC, you need ${(revenue / (cpc * ctr)).toFixed(0)} additional pageviews to add ₹1,000 of revenue.`;
+    });
+  </script>
+  <script src="/assets/js/main.js" defer></script>
+</body>
+</html>

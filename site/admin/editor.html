@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
     <title>Article Editor • Brahmand</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -202,16 +203,34 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
   </head>
   <body>
-    <header>
-      <div>
-        <a href="/admin/dashboard.html">← Back to dashboard</a>
-        <h1 style="margin: 6px 0 0">Article Editor</h1>
-      </div>
-      <button id="logoutBtn" class="btn-secondary" type="button">Log out</button>
-    </header>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div>
+            <a href="/admin/dashboard.html">← Back to dashboard</a>
+            <h1 style="margin: 6px 0 0">Article Editor</h1>
+          </div>
+          <button id="logoutBtn" class="btn-secondary" type="button">Log out</button>
+        </header>
 
-    <main>
-      <aside class="sidebar">
+        <div class="admin-main">
+          <main>
+            <aside class="sidebar">
         <h2>Metadata</h2>
         <form id="articleForm">
           <label for="title">Title</label>
@@ -253,6 +272,17 @@
             <ul id="linkList"></ul>
           </div>
 
+          <div class="link-suggestions">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>Media library</strong>
+              <button type="button" id="refreshMediaBtn" class="btn-secondary" style="padding:4px 8px;font-size:0.75rem">Refresh</button>
+            </div>
+            <ul id="mediaList"></ul>
+            <div class="status-bar">
+              <a href="/admin/media.html" style="color: var(--muted)">Open full library →</a>
+            </div>
+          </div>
+
           <div class="actions">
             <button class="btn-secondary" data-action="draft" type="button">Save draft</button>
             <button class="btn-secondary" data-action="review" type="button">Submit review</button>
@@ -263,17 +293,20 @@
         <div id="statusBar" class="status-bar"></div>
         <div id="filePath" class="status-bar"></div>
       </aside>
-      <section class="editor-area">
-        <div class="editor-pane">
-          <label for="markdown" style="padding: 16px; margin: 0">Markdown</label>
-          <textarea id="markdown" class="markdown" placeholder="Write the body in Markdown…" spellcheck="false"></textarea>
+            <section class="editor-area">
+              <div class="editor-pane">
+                <label for="markdown" style="padding: 16px; margin: 0">Markdown</label>
+                <textarea id="markdown" class="markdown" placeholder="Write the body in Markdown…" spellcheck="false"></textarea>
+              </div>
+              <div class="editor-pane">
+                <label style="padding: 16px; margin: 0">Preview</label>
+                <article id="preview" class="preview"></article>
+              </div>
+            </section>
+          </main>
         </div>
-        <div class="editor-pane">
-          <label style="padding: 16px; margin: 0">Preview</label>
-          <article id="preview" class="preview"></article>
-        </div>
-      </section>
-    </main>
+      </div>
+    </div>
 
     <script>
       const qs = new URLSearchParams(window.location.search);
@@ -286,6 +319,8 @@
       const filePathDisplay = document.getElementById("filePath");
       const verseSelect = document.getElementById("verse");
       const linkList = document.getElementById("linkList");
+      const mediaListEl = document.getElementById("mediaList");
+      const refreshMediaBtn = document.getElementById("refreshMediaBtn");
       const publishAtInput = document.getElementById("publish_at");
       const titleInput = document.getElementById("title");
       const slugInput = document.getElementById("slug");
@@ -387,12 +422,53 @@
 
       function insertLink(link) {
         const selection = window.getSelection().toString() || link.title;
-        const snippet = `[${selection}](${link.url})`;
+        insertSnippet(`[${selection}](${link.url})`);
+      }
+
+      function insertSnippet(snippet) {
         const cursorPos = markdownInput.selectionStart || 0;
         const value = markdownInput.value;
         markdownInput.value = `${value.slice(0, cursorPos)}${snippet}${value.slice(cursorPos)}`;
         updatePreview();
       }
+
+      async function loadMediaSuggestions() {
+        try {
+          const payload = await fetchJSON("/api/media");
+          renderMediaList((payload?.media || []).slice(0, 6));
+        } catch (error) {
+          mediaListEl.innerHTML = `<li>${error.message}</li>`;
+        }
+      }
+
+      function renderMediaList(items) {
+        mediaListEl.innerHTML = "";
+        if (!items.length) {
+          mediaListEl.innerHTML = '<li>No media yet. <a href="/admin/media.html" target="_blank">Upload files</a></li>';
+          return;
+        }
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div>
+              <strong>${item.name}</strong>
+              <span>${item.width || "?"}×${item.height || "?"}</span>
+            </div>
+            <button class="btn-secondary" data-media="${item.path}" type="button">Insert</button>
+          `;
+          mediaListEl.appendChild(li);
+        });
+      }
+
+      mediaListEl.addEventListener("click", (event) => {
+        const url = event.target.getAttribute("data-media");
+        if (url) {
+          insertSnippet(`![alt text](${url})`);
+          showStatus("Inserted media link", "success");
+        }
+      });
+
+      refreshMediaBtn.addEventListener("click", loadMediaSuggestions);
 
       async function saveArticle(action) {
         const payload = {
@@ -486,8 +562,16 @@
         } else {
           loadLinkSuggestions(verseSelect.value);
         }
+        await loadMediaSuggestions();
       })();
+
+      const currentPath = window.location.pathname;
+      document.querySelectorAll(".admin-nav a").forEach((link) => {
+        const linkPath = new URL(link.href, window.location.origin).pathname;
+        if (currentPath === linkPath) {
+          link.classList.add("active");
+        }
+      });
     </script>
   </body>
 </html>
-

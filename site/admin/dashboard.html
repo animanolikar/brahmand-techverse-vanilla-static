@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
     <title>Brahmand Admin Console</title>
     <style>
       :root {
@@ -249,75 +250,87 @@
     </style>
   </head>
   <body>
-    <div class="layout">
-      <aside>
-        <div class="logo">BRAHMAND / ADMIN</div>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
         <nav>
-          <button class="active" type="button">Dashboard</button>
-          <button type="button">Articles</button>
-          <button type="button">Calendar</button>
-          <button type="button">SEO & Ads</button>
-          <button type="button">Experiments</button>
-          <button type="button">Automation</button>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
         </nav>
       </aside>
-      <main>
-        <header>
+      <div class="admin-content">
+        <header class="admin-header">
           <div class="title-group">
             <h1>Morning briefing</h1>
             <p id="subtitle">Loading summary…</p>
           </div>
           <div class="actions">
             <button id="newArticleBtn" class="secondary" type="button">New article</button>
+            <button id="calendarBtn" class="secondary" type="button">Calendar</button>
             <button id="generateBtn" class="primary" type="button">⚡ Generate Site</button>
             <button id="sitemapBtn" class="secondary" type="button">Ping sitemaps</button>
             <button id="logoutBtn" class="secondary" type="button">Log out</button>
           </div>
         </header>
 
-        <section class="grid" id="metricsGrid">
-          <article class="card">
-            <h2>Core Web Vitals</h2>
-            <div id="vitalsMetric" class="metric">—</div>
-            <p id="vitalsTrend" class="muted"></p>
-          </article>
-          <article class="card">
-            <h2>Revenue snapshot</h2>
-            <div id="revenueMetric" class="metric">—</div>
-            <p id="revenueDetails" class="muted"></p>
-          </article>
-          <article class="card">
-            <h2>SEO alerts</h2>
-            <ul class="list" id="seoAlerts"></ul>
-          </article>
-        </section>
+        <main class="admin-main">
+          <section class="grid" id="metricsGrid">
+            <article class="card">
+              <h2>Core Web Vitals</h2>
+              <div id="vitalsMetric" class="metric">—</div>
+              <p id="vitalsTrend" class="muted"></p>
+            </article>
+            <article class="card">
+              <h2>Revenue snapshot</h2>
+              <div id="revenueMetric" class="metric">—</div>
+              <p id="revenueDetails" class="muted"></p>
+            </article>
+            <article class="card">
+              <h2>SEO alerts</h2>
+              <ul class="list" id="seoAlerts"></ul>
+            </article>
+          </section>
 
-        <section class="grid">
-          <article class="card">
-            <h2>Today’s publish queue</h2>
-            <ul class="list" id="publishQueue"></ul>
-          </article>
-          <article class="card">
-            <h2>Overdue edits</h2>
-            <ul class="list" id="overdueEdits"></ul>
-          </article>
-          <article class="card">
-            <h2>Jobs & automations</h2>
-            <table class="jobs-table" id="jobsTable">
-              <thead>
-                <tr>
-                  <th>Job</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </article>
-        </section>
+          <section class="grid">
+            <article class="card">
+              <h2>Today’s publish queue</h2>
+              <ul class="list" id="publishQueue"></ul>
+            </article>
+            <article class="card">
+              <h2>Overdue edits</h2>
+              <ul class="list" id="overdueEdits"></ul>
+            </article>
+            <article class="card">
+              <h2>Jobs & automations</h2>
+              <table class="jobs-table" id="jobsTable">
+                <thead>
+                  <tr>
+                    <th>Job</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </article>
+            <article class="card">
+              <h2>Scheduler</h2>
+              <p id="schedulerStatus">Loading…</p>
+              <button id="runSchedulerBtn" class="secondary" type="button">Run scheduler</button>
+            </article>
+          </section>
 
-        <footer>Need to hit APIs directly? Your `admin_session` cookie is active for 12h.</footer>
-      </main>
+          <footer>Need to hit APIs directly? Your `admin_session` cookie is active for 12h.</footer>
+        </main>
+      </div>
     </div>
 
     <div id="toast" class="toast"></div>
@@ -473,12 +486,31 @@
       document.getElementById("newArticleBtn").addEventListener("click", () => {
         window.location.href = "/admin/editor.html";
       });
+      document.getElementById("calendarBtn").addEventListener("click", () => {
+        window.location.href = "/admin/calendar.html";
+      });
+      document.getElementById("runSchedulerBtn").addEventListener("click", async () => {
+        try {
+          const payload = await fetchJSON("/api/scheduler/run", { method: "POST" });
+          document.getElementById("schedulerStatus").textContent = `Published ${payload.published} articles at ${new Date(payload.run_at).toLocaleTimeString()}`;
+        } catch (error) {
+          document.getElementById("schedulerStatus").textContent = error.message;
+        }
+      });
       document.getElementById("logoutBtn").addEventListener("click", async () => {
         await fetchJSON("/api/auth/logout", { method: "POST" });
         window.location.href = "/admin/";
       });
 
       hydrateDashboard();
+
+      const currentPath = window.location.pathname;
+      document.querySelectorAll(".admin-nav a").forEach((link) => {
+        const linkPath = new URL(link.href, window.location.origin).pathname;
+        if (currentPath === linkPath) {
+          link.classList.add("active");
+        }
+      });
     </script>
   </body>
 </html>

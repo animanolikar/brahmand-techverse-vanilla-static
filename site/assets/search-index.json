@@ -61,5 +61,47 @@
     "url": "/search/index.html",
     "verse": "Search",
     "type": "page"
+  },
+  {
+    "title": "aa",
+    "excerpt": "ad",
+    "url": "/techverse/aaa-1.html",
+    "type": "article"
+  },
+  {
+    "title": "aa",
+    "excerpt": "ad",
+    "url": "/techverse/aaa.html",
+    "type": "article"
+  },
+  {
+    "title": "aa",
+    "excerpt": "ad",
+    "url": "/techverse/aaa-2.html",
+    "type": "article"
+  },
+  {
+    "title": "s",
+    "excerpt": "sd",
+    "url": "/techverse/ss.html",
+    "type": "article"
+  },
+  {
+    "title": "Metabolic mornings reboot",
+    "excerpt": "7-day metabolic reset for founders working remote.",
+    "url": "/healthverse/metabolic-mornings.html",
+    "type": "article"
+  },
+  {
+    "title": "AI tool stack 2025",
+    "excerpt": "Curated AI automation stack builders rely on for 2025.",
+    "url": "/techverse/ai-tool-stack.html",
+    "type": "article"
+  },
+  {
+    "title": "Cash-flow ladder for creators",
+    "excerpt": "Personal finance ladder to derisk cash burn.",
+    "url": "/finverse/cash-flow-ladder.html",
+    "type": "article"
   }
 ]

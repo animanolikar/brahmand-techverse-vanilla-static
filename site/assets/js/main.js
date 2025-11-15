@@ -7,6 +7,66 @@
     }
   };
 
+  const hydrateMenus = (data) => {
+    if (!data) return;
+    const navList = document.querySelector(".navbar nav ul");
+    if (navList && Array.isArray(data.header) && data.header.length) {
+      navList.innerHTML = "";
+      data.header.forEach((item) => {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = item.url;
+        link.textContent = item.label;
+        li.appendChild(link);
+        navList.appendChild(li);
+      });
+      const exploreLi = document.createElement("li");
+      const exploreBtn = document.createElement("button");
+      exploreBtn.className = "button-secondary";
+      exploreBtn.type = "button";
+      exploreBtn.textContent = "Explore";
+      exploreBtn.setAttribute("data-mega-toggle", "");
+      exploreBtn.setAttribute("aria-expanded", "false");
+      exploreBtn.setAttribute("aria-haspopup", "true");
+      exploreBtn.setAttribute("aria-controls", "mega-menu");
+      exploreLi.appendChild(exploreBtn);
+      navList.appendChild(exploreLi);
+    }
+
+    const megaMenu = document.querySelector("[data-mega-menu] .mega-grid");
+    if (megaMenu && Array.isArray(data.mega) && data.mega.length) {
+      megaMenu.innerHTML = "";
+      data.mega.forEach((section) => {
+        const col = document.createElement("div");
+        col.className = "mega-column";
+        col.innerHTML = `<h4>${section.title}</h4>`;
+        const list = document.createElement("ul");
+        (section.links || []).forEach((link) => {
+          const li = document.createElement("li");
+          const anchor = document.createElement("a");
+          anchor.href = link.url;
+          anchor.textContent = link.label;
+          li.appendChild(anchor);
+          list.appendChild(li);
+        });
+        col.appendChild(list);
+        megaMenu.appendChild(col);
+      });
+    }
+  };
+
+  const loadMenus = async () => {
+    try {
+      const response = await fetch("/assets/data/menus.json", { cache: "no-store" });
+      if (!response.ok) return null;
+      const data = await response.json();
+      hydrateMenus(data);
+      return data;
+    } catch {
+      return null;
+    }
+  };
+
   const setupNav = () => {
     const megaToggle = document.querySelector("[data-mega-toggle]");
     const megaMenu = document.querySelector("[data-mega-menu]");
@@ -150,7 +210,8 @@
     }
   };
 
-  onReady(() => {
+  onReady(async () => {
+    await loadMenus();
     setupNav();
     setupConsentBanner();
     setupStickyAds();

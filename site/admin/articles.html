@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <title>Articles • Brahmand Admin</title>
+    <style>
+      .filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .filter-bar label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .filter-bar select {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: rgba(3, 6, 17, 0.8);
+        color: var(--text);
+        min-width: 180px;
+      }
+
+      table.articles-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--panel-strong, rgba(6, 10, 25, 0.9));
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+
+      table.articles-table th,
+      table.articles-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        text-align: left;
+      }
+
+      table.articles-table th {
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      table.articles-table td.actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .status-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        text-transform: capitalize;
+        background: rgba(124, 77, 255, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-nav">
+        <div class="logo">
+          BRAHMAND
+          <small>Admin console</small>
+        </div>
+        <nav>
+          <a href="/admin/dashboard.html">Dashboard</a>
+          <a href="/admin/articles.html">Articles</a>
+          <a href="/admin/editor.html">New article</a>
+          <a href="/admin/calendar.html">Calendar</a>
+          <a href="/admin/media.html">Media</a>
+          <a href="/admin/menus.html">Menus</a>
+          <a href="/admin/settings-ads.html">Ads & Consent</a>
+        </nav>
+      </aside>
+      <div class="admin-content">
+        <header class="admin-header">
+          <div class="title-group">
+            <h1>Articles</h1>
+            <p id="articleCount">Loading articles…</p>
+          </div>
+          <div class="actions">
+            <button id="calendarBtn" class="btn secondary" type="button">Calendar</button>
+            <button id="newArticleBtn" class="btn primary" type="button">New article</button>
+            <button id="refreshBtn" class="btn secondary" type="button">Refresh</button>
+            <button id="logoutBtn" class="btn secondary" type="button">Log out</button>
+          </div>
+        </header>
+
+        <main class="admin-main">
+          <section style="margin-bottom: 24px">
+            <div class="filter-bar">
+              <label>
+                Verse
+                <select id="verseFilter">
+                  <option value="">All verses</option>
+                </select>
+              </label>
+              <label>
+                Status
+                <select id="statusFilter">
+                  <option value="">All statuses</option>
+                  <option value="draft">Draft</option>
+                  <option value="review">Review</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="published">Published</option>
+                </select>
+              </label>
+            </div>
+            <table class="articles-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Verse</th>
+                  <th>Status</th>
+                  <th>Publish at</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="articlesBody">
+                <tr>
+                  <td colspan="6">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const verseFilter = document.getElementById("verseFilter");
+      const statusFilter = document.getElementById("statusFilter");
+      const tableBody = document.getElementById("articlesBody");
+      const articleCount = document.getElementById("articleCount");
+
+      async function fetchJSON(url, options = {}) {
+        const response = await fetch(url, {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          ...options,
+        });
+
+        if (response.status === 401) {
+          window.location.href = "/admin/";
+          return null;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.message || "Request failed");
+        }
+
+        return response.json();
+      }
+
+      async function loadVerses() {
+        const payload = await fetchJSON("/api/verses");
+        verseFilter.innerHTML = '<option value="">All verses</option>';
+        (payload?.verses || []).forEach((verse) => {
+          const option = document.createElement("option");
+          option.value = verse.code;
+          option.textContent = verse.title;
+          verseFilter.appendChild(option);
+        });
+      }
+
+      function formatDate(date) {
+        if (!date) return "—";
+        return new Date(date).toLocaleString();
+      }
+
+      async function loadArticles() {
+        const params = new URLSearchParams();
+        if (verseFilter.value) params.append("verse", verseFilter.value);
+        if (statusFilter.value) params.append("status", statusFilter.value);
+        const query = params.toString();
+        const payload = await fetchJSON(`/api/articles${query ? `?${query}` : ""}`);
+        const articles = payload?.articles || [];
+        articleCount.textContent = `${articles.length} article${articles.length === 1 ? "" : "s"}`;
+        tableBody.innerHTML = "";
+        if (!articles.length) {
+          tableBody.innerHTML = '<tr><td colspan="6">No articles found.</td></tr>';
+          return;
+        }
+
+        articles.forEach((article) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>
+              <strong>${article.title}</strong>
+              <div class="muted">${article.slug}</div>
+            </td>
+            <td>${article.verse || "—"}</td>
+            <td><span class="status-pill">${article.status}</span></td>
+            <td>${formatDate(article.publish_at)}</td>
+            <td>${formatDate(article.updated_at)}</td>
+            <td class="actions">
+              <button class="btn secondary" data-edit="${article.id}">Edit</button>
+              ${
+                article.status !== "published"
+                  ? `<button class="btn primary" data-publish="${article.id}">Publish</button>`
+                  : ""
+              }
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      tableBody.addEventListener("click", async (event) => {
+        const editId = event.target.getAttribute("data-edit");
+        const publishId = event.target.getAttribute("data-publish");
+        if (editId) {
+          window.location.href = `/admin/editor.html?id=${editId}`;
+          return;
+        }
+        if (publishId) {
+          try {
+            await fetchJSON(`/api/articles/${publishId}/publish`, { method: "POST" });
+            await loadArticles();
+          } catch (error) {
+            alert(error.message);
+          }
+        }
+      });
+
+      document.getElementById("refreshBtn").addEventListener("click", loadArticles);
+      verseFilter.addEventListener("change", loadArticles);
+      statusFilter.addEventListener("change", loadArticles);
+      document.getElementById("calendarBtn").addEventListener("click", () => {
+        window.location.href = "/admin/calendar.html";
+      });
+      document.getElementById("newArticleBtn").addEventListener("click", () => {
+        window.location.href = "/admin/editor.html";
+      });
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetchJSON("/api/auth/logout", { method: "POST" });
+        window.location.href = "/admin/";
+      });
+
+      (async function init() {
+        await loadVerses();
+        await loadArticles();
+        const currentPath = window.location.pathname;
+        document.querySelectorAll(".admin-nav a").forEach((link) => {
+          const linkPath = new URL(link.href, window.location.origin).pathname;
+          if (currentPath === linkPath) {
+            link.classList.add("active");
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
