@@ -67,7 +67,7 @@ async function main() {
   const role = (args.role || args.r || "super_admin").toLowerCase();
 
   if (!email || !password) {
-    console.error("Usage: node scripts/create-admin-user.js --email=user@site.com --password=Secret123 --role=super_admin");
+    console.error("Usage: node scripts/create-admin-user.js --email=admin1@brahmand.co --password=Aniruddha@450 --role=super_admin");
     process.exit(1);
   }
 

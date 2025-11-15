@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8721277719999186"
+     crossorigin="anonymous"></script>
   <title>Text Cleaner – Brahmand Tools</title>
   <meta name="description" content="Clean, normalize, and download text directly in your browser.">
   <meta property="og:title" content="Text Cleaner – Brahmand Tools">
@@ -197,7 +199,8 @@
       const cleanText = () => {
         let value = input.value;
         if (options.trim.checked) value = value.trim();
-        let lines = value.split(/?
+        let lines = value.split(/
+?
 /);
         if (options.empty.checked) {
           lines = lines.filter((line) => line.trim().length > 0);
