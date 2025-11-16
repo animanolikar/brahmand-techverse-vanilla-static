@@ -23,12 +23,14 @@ async function fetchPublishedArticles() {
             a.title,
             a.status,
             a.publish_at,
+            a.updated_at,
             a.meta_title,
             a.meta_desc,
             a.schema_type,
             a.canonical_url,
             a.body_md,
-            v.code AS verse_code
+            v.code AS verse_code,
+            v.title AS verse_title
      FROM articles a
      INNER JOIN verses v ON v.id = a.verse_id
      WHERE a.status = 'published'
@@ -73,7 +75,7 @@ function resolveHtmlTemplate({ verse, title, body }) {
   </html>`;
 }
 
-async function writeHtmlFile(article, htmlBody) {
+async function writeHtmlFile(article, htmlBody, schemaScripts = "") {
   const verseDir = path.join(SITE_ROOT, article.verse_code);
   fs.mkdirSync(verseDir, { recursive: true });
   const filePath = path.join(verseDir, `${article.slug}.html`);
@@ -82,7 +84,11 @@ async function writeHtmlFile(article, htmlBody) {
     title: article.meta_title || article.title,
     body: htmlBody,
   });
-  fs.writeFileSync(filePath, template, "utf8");
+  let output = template;
+  if (schemaScripts && template.includes("</head>")) {
+    output = template.replace("</head>", `${schemaScripts}\n</head>`);
+  }
+  fs.writeFileSync(filePath, output, "utf8");
   return filePath;
 }
 
@@ -140,8 +146,11 @@ async function buildSite(siteUrl = process.env.SITE_URL || "http://localhost:300
       markdown = fs.readFileSync(markdownPath, "utf8");
     }
 
-    const htmlBody = await renderMarkdown(markdown);
-    await writeHtmlFile(article, htmlBody);
+    const renderedBody = await renderMarkdown(markdown);
+    const breadcrumbHtml = buildBreadcrumbs(article);
+    const finalBody = `${breadcrumbHtml}${renderedBody}`;
+    const schemaScripts = buildSchemaScripts(article, normalizedSiteUrl);
+    await writeHtmlFile(article, finalBody, schemaScripts);
     searchEntries.push(article);
   }
 
@@ -158,3 +167,93 @@ async function buildSite(siteUrl = process.env.SITE_URL || "http://localhost:300
 module.exports = {
   buildSite,
 };
+
+function buildBreadcrumbs(article) {
+  const verseTitle = article.verse_title || article.verse_code;
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <a href="/">Home</a>
+  <span>/</span>
+  <a href="/${article.verse_code}/">${verseTitle}</a>
+  <span>/</span>
+  <span>${article.title}</span>
+</nav>`;
+}
+
+function buildSchemaScripts(article, siteUrl) {
+  const articleUrl = `${siteUrl}/${article.verse_code}/${article.slug}.html`;
+  const publishDate = article.publish_at
+    ? new Date(article.publish_at).toISOString()
+    : new Date().toISOString();
+  const updatedDate = article.updated_at
+    ? new Date(article.updated_at).toISOString()
+    : publishDate;
+  const imageUrl = `${siteUrl}/assets/og/home.png`;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.meta_title || article.title,
+    description:
+      article.meta_desc ||
+      `${article.title} — explore the ${article.verse_title || article.verse_code} verse on Brahmand.`,
+    image: imageUrl,
+    datePublished: publishDate,
+    dateModified: updatedDate,
+    author: {
+      "@type": "Organization",
+      name: "Brahmand.co",
+      url: siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Brahmand.co",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/assets/og/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": articleUrl,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: article.verse_title || article.verse_code,
+        item: `${siteUrl}/${article.verse_code}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.title,
+        item: articleUrl,
+      },
+    ],
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Brahmand.co",
+    url: siteUrl,
+    logo: `${siteUrl}/assets/og/logo.png`,
+  };
+
+  return [
+    `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>`,
+    `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`,
+    `<script type="application/ld+json">${JSON.stringify(organizationSchema)}</script>`,
+  ].join("\n");
+}

@@ -216,5 +216,32 @@
     setupConsentBanner();
     setupStickyAds();
     setupThemeToggle();
+    injectWebSiteSchema();
   });
 })();
+
+function injectWebSiteSchema() {
+  const scriptId = "brahmand-website-schema";
+  if (document.getElementById(scriptId)) {
+    return;
+  }
+
+  const siteUrl = window.location.origin;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Brahmand.co",
+    url: siteUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/search/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const script = document.createElement("script");
+  script.type = "application/ld+json";
+  script.id = scriptId;
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
+}

@@ -24,8 +24,8 @@ const { triggerBuild, listJobs } = require("../services/buildService");
 const { runScheduler } = require("../services/schedulerService");
 const { listMenus, createMenu, updateMenu, deleteMenu } = require("../services/menuService");
 const { saveMedia, listMedia, deleteMedia } = require("../services/mediaService");
-const { getSetting, upsertSetting } = require("../services/settingsService");
 const { pool } = require("../config/db");
+const { getSetting, upsertSetting } = require("../services/settingsService");
 
 const router = express.Router();
 const upload = multer({
@@ -314,6 +314,22 @@ router.delete("/menus/:id", requireAuth, requireScopes("menus:edit"), async (req
   try {
     await deleteMenu(req.params.id);
     res.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/trends", async (req, res, next) => {
+  try {
+    const limit = Math.min(Number(req.query.limit) || 6, 50);
+    const [rows] = await pool.query(
+      `SELECT title, link AS url, description
+       FROM trends
+       ORDER BY created_at DESC
+       LIMIT ?`,
+      [limit],
+    );
+    res.json({ ok: true, trends: rows });
   } catch (error) {
     next(error);
   }

@@ -10,7 +10,9 @@
     "build:og": "node scripts/generate-og-images.js",
     "create:admin": "node scripts/create-admin-user.js",
     "build:site": "node scripts/build-site.js",
-    "run:scheduler": "node scripts/run-scheduler.js"
+    "run:scheduler": "node scripts/run-scheduler.js",
+    "fetch:trends": "node scripts/fetch-trends.js",
+    "generate:trend-articles": "node scripts/generate-trend-articles.js"
   },
   "keywords": [
     "brahmand",
@@ -27,6 +29,7 @@
     "csv-parse": "^6.1.0",
     "dayjs": "^1.11.19",
     "express": "^5.1.0",
+    "cheerio": "^1.0.0-rc.12",
     "helmet": "^8.1.0",
     "html-minifier": "^4.0.0",
     "jsdom": "^26.1.0",

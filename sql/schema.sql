@@ -234,3 +234,15 @@ CREATE TABLE IF NOT EXISTS article_recommendations (
   UNIQUE KEY uq_article_recommendations (article_id),
   CONSTRAINT fk_rec_article FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trends (
+  id            BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title         VARCHAR(255) NOT NULL,
+  link          VARCHAR(255) DEFAULT NULL,
+  source        VARCHAR(120) DEFAULT NULL,
+  description   TEXT DEFAULT NULL,
+  meta_title    VARCHAR(255) DEFAULT NULL,
+  meta_description TEXT DEFAULT NULL,
+  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_trends_title (title)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

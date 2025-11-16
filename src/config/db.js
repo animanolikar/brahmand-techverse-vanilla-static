@@ -3,9 +3,9 @@
 const mysql = require("mysql2/promise");
 
 const dbConfig = {
-  host: process.env.MYSQL_HOST || "74.225.145.74",
-  user: process.env.MYSQL_USER || "appuser",
-  password: process.env.MYSQL_PASSWORD || "Aniruddha@450",
+  host: process.env.MYSQL_HOST || "20.197.10.226",
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD || "Kred@Pool123",
   database: process.env.MYSQL_DATABASE || "brahmand_admin",
   waitForConnections: true,
   connectionLimit: Number(process.env.MYSQL_POOL_SIZE || 10),

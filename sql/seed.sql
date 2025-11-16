@@ -116,3 +116,10 @@ WHERE v.code = 'skillverse'
   AND NOT EXISTS (
     SELECT 1 FROM menus WHERE area='mega' AND label='Storytelling drills'
   );
+
+-- Trends seed placeholder
+INSERT INTO trends (title, link, source, description, meta_title, meta_description)
+SELECT 'AI tool stack 2025', 'https://brahmand.co/techverse/ai-tools.html', 'Brahmand',
+       'AI workflow stack that anchors the Techverse launch lineup.',
+       'AI tool stack 2025 • Brahmand', 'Practical automations for builders.'
+WHERE NOT EXISTS (SELECT 1 FROM trends WHERE title = 'AI tool stack 2025');
