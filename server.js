@@ -13,6 +13,7 @@ const authRouter = require("./src/routes/auth");
 const { resolveSiteUrl } = require("./src/utils/site");
 const { pingSearchEngines } = require("./src/services/sitemap");
 const jsonBody = require("./src/middleware/jsonBody");
+const { startTrendAutomation } = require("./src/services/automationScheduler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -85,4 +86,9 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Brahmand server listening on http://localhost:${PORT}`);
+  if (process.env.DISABLE_TREND_AUTOMATION === "1") {
+    console.log("[automation] Trend pipeline automation disabled via DISABLE_TREND_AUTOMATION");
+  } else {
+    startTrendAutomation();
+  }
 });
